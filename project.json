@@ -1,0 +1,17 @@
+{
+  "project_type" : "javascript",
+  "debugMode" : 1,
+  "showFPS" : true,
+  "frameRate" : 60,
+  "id" : "gameCanvas",
+  "renderMode" : 0,
+  "loadExtension" : true,
+  "engineDir" : "cocos2d-html5",
+  "modules" : [
+    "cocos2d",
+    "pluginx"
+  ],
+  "jsList": [
+    "spriter.js"
+  ]
+}
