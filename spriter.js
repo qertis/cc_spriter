@@ -10,6 +10,7 @@
  */
 cc.Spriter = cc.Sprite.extend({
     _rootPath: '',
+    container: null,
 
     /**
      * SpriterAnimation is the represent of "entity" in Spriter
@@ -19,6 +20,10 @@ cc.Spriter = cc.Sprite.extend({
      */
     ctor: function (sconLink, sconKey, entityName, animationName) {
         this._super();
+
+        this.container = new cc.Node();
+
+        this.addChild(this.container);
 
         this._rootPath = sconLink.replace(/\w+.scon$/, '');
 
@@ -311,22 +316,14 @@ cc.Spriter = cc.Sprite.extend({
                 var obj = timeline.keyframes[0].object;
                 sprite = new cc.Sprite(sprAnim.data.getFileTexture(obj.folderID, obj.fileID).getTexture());
 
-                sprite.setAnchorPoint(cc.p(0.5, 0.5));
+                sprite.anchorX = sprite.anchorY = 0.5;
                 sprite.setName(timeline.name);
-                sprite.setTag()
                 sprites[timeline.name] = sprite;
 
-                $$scene.addChild(sprite);
-
+                this.container.addChild(sprite);
             } else {
-
-                //FIXME: сейчас проигрывается только оддна анимация, потому-что
-                // имена добавляемые в $$scene имеют одно и тоже имя.
-                // Поэтому нужно либо дать уникальный идентификатор,
-                // Либо Добавлять не напрямую в сцену, а использую какой-то враппер объект с уникальным именем (предпочтительней)
-                sprite = $$scene.getChildByName(timeline.name);
+                sprite = this.container.getChildByName(timeline.name);
             }
-
 
             // Apply transform
             var model = object.worldSpace;
@@ -351,7 +348,6 @@ cc.Spriter = cc.Sprite.extend({
                     // This key is between last frame and this frame
                     if (valKey.time <= time && valKey.time >= time - elapsed) {
                         this.vars[valline.name] = valKey.val;
-                        //this.emit('valline', valline.name, valKey.val);//FIXME uncomment
                     }
                 }
             }
@@ -366,7 +362,6 @@ cc.Spriter = cc.Sprite.extend({
                 // This key is between last frame and this frame
                 if (tag.time <= time && tag.time >= time - elapsed) {
                     this.tags = tag.tags;
-                    //this.emit('tagline', tag.tags);//FIXME uncomment
                 }
             }
         }
@@ -381,7 +376,6 @@ cc.Spriter = cc.Sprite.extend({
                     event = eventline.keys[j];
                     // This key is between last frame and this frame
                     if (event.time <= time && event.time >= time - elapsed) {
-                        //this.emit('eventline', eventline.name);//FIXME uncomment
                     }
                 }
             }
@@ -624,6 +618,7 @@ var Transform = cc.Class.extend({
         this.rotation.deg = loadFloat(json, 'angle', 0);
         this.scale.x = loadFloat(json, 'scale_x', 1);
         this.scale.y = loadFloat(json, 'scale_y', 1);
+
         return this;
     }
 });
@@ -1280,10 +1275,8 @@ var Mainline = cc.Class.extend({
  */
 var TimelineKeyframe = Keyframe.extend({
     ctor: function (type) {
-        this.type = type;
-
         /** @type {string} */
-        this.type = '';
+        this.type = type || '';
         /** @type {number} */
         this.spin = 1; // 1: counter-clockwise, -1: clockwise
         /** @type {number} */
@@ -1313,21 +1306,24 @@ var TimelineKeyframe = Keyframe.extend({
         if (time1 === time2) {
             return 0;
         }
-        if (this.curve === 0) {
-            return 0;
-        } // instant
-        var tween = (time - time1) / (time2 - time1);
-        if (this.curve === 1) {
-            return tween;
-        } // linear
-        if (this.curve === 2) {
-            return interpolateQuadratic(0.0, this.c1, 1.0, tween);
-        }
-        if (this.curve === 3) {
-            return interpolateCubic(0.0, this.c1, this.c2, 1.0, tween);
-        }
 
-        return 0;
+        var tween = (time - time1) / (time2 - time1);
+
+        switch (this.curve) {
+            case 0:
+                return 0;
+            // instant
+            case 1:
+                return tween;
+            // linear
+            case 2:
+                return interpolateQuadratic(0.0, this.c1, 1.0, tween);
+            case 3:
+                return interpolateCubic(0.0, this.c1, this.c2, 1.0, tween);
+
+            default:
+                return 0;
+        }
     }
 
 });
