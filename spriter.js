@@ -1,5 +1,5 @@
 /**
- * Spriter plugin for Cocos2d HTML5 engine
+ * Spriter plugin for Cocos2d HTML5
  * @version 1.0.0
  * @author Denis Baskovsky (denis@baskovsky.ru)
  *
@@ -8,19 +8,17 @@
  * - Jason Andersen jgandersen@gmail.com
  * - Isaac Burns isaacburns@gmail.com
  */
-!(function () {
+!(function (cc) {
     'use strict';
 
     cc.Spriter = cc.Sprite.extend({
         container: null,
-
         sconLink: '',
 
         /**
-         * SpriterAnimation is the represent of "entity" in Spriter
-         * @param {String} sconKey    Which scon file to use for this animation
-         * @param {String} entityName Name of the entity you want to create
-         * @constructor
+         * Spriter constructor
+         * @param {String} sconLink scon file to use for this animation
+         * @param entityName
          */
         ctor: function (sconLink, entityName) {
             this._super();
@@ -28,13 +26,16 @@
             var self = this;
 
             this.sconLink = sconLink;
-
             this.preload(function (scon) {
                 self._init(scon, entityName);
             });
 
         },
 
+        /**
+         * Prealod scon resource
+         * @param {function} callback
+         */
         preload: function (callback) {
             var sconLink = this.sconLink;
 
@@ -42,10 +43,9 @@
                 if (error) {
                     throw error;
                 }
-
                 var _rootPath = scon._rootPath = sconLink.replace(/\w+.scon$/, '');
-
                 var loaderIndex = 0;
+
                 scon.folder.forEach(function (folder) {
                     folder.file.forEach(function () {
                         ++loaderIndex;
@@ -67,7 +67,6 @@
                                 callback(scon);
                             }
                         });
-
                     });
                 });
 
@@ -129,9 +128,10 @@
                 this.currAnimName = anim;
 
                 var currAnim = this.currAnim();
-                if (currAnim) {
+                if (this.hasAnim(currAnim)) {
                     this.time = currAnim.minTime;
                 }
+
                 this.elapsedTime = 0;
                 this.dirty = true;
 
@@ -386,6 +386,18 @@
         },
 
         /**
+         * Current animation validation
+         * @returns {boolean}
+         */
+        hasAnim: function () {
+            if(!this.entity.anims.hasOwnProperty(this.currAnimName)) {
+                throw 'current animation not found';
+            }
+
+            return !!this.currAnimName;
+        },
+
+        /**
          * Get current animation object
          * @return {Animation}
          */
@@ -398,17 +410,17 @@
          * @param {Number} time Time(ms)
          */
         setTime: function (time) {
-            var anim = this.currAnim();
-            if (anim) {
-                if (time >= anim.maxTime) {
+            var currAnim = this.currAnim();
+            if (currAnim) {
+                if (time >= currAnim.maxTime) {
                     if (this.stopAtEnd) {
-                        time = anim.maxTime;
+                        time = currAnim.maxTime;
                         if (!this.isEnd) {
                             this.isEnd = true;
                             cc.log('spriter end trigger');
                         }
                     } else {
-                        time = wrap(time, anim.minTime, anim.maxTime);
+                        time = wrap(time, currAnim.minTime, currAnim.maxTime);
                     }
                 }
             }
@@ -513,9 +525,6 @@
         'sin',
         function getterFunc() {
             return Math.sin(this.rad);
-        },
-        function setterFunc() {
-            //this.rad = cc.degreesToRadians(value);
         }
     );
 
@@ -902,6 +911,9 @@
         return out;
     };
 
+    /**
+     * Bone
+     */
     var Bone = cc.Class.extend({
         ctor: function () {
             /** @type {number} */
@@ -1655,6 +1667,10 @@
          * @return {Entity}
          */
         getEntity: function (entityName) {
+            if (!this.entityMap.hasOwnProperty(entityName)) {
+                throw 'entity not found';
+            }
+
             return this.entityMap[entityName];
         },
         /**
@@ -1831,4 +1847,4 @@
         return wrapAngleRadians(a + (wrapAngleRadians(b - a) * t));
     }
 
-}());
+}(window.cc));

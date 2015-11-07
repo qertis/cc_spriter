@@ -20,15 +20,11 @@ cc.game.onStart = function () {
         ctor: function () {
             this._super();
 
-            var spriter = new cc.Spriter('res/test_anim/test.scon', 'entity_000', 'NewAnimation');
+            var spriter = new cc.Spriter('res/test_anim/test.scon', 'entity_000');
             spriter.setScale(0.5);
             spriter.setPosition(cc.p(cc.winSize.width / 2, 100));
             spriter.play('NewAnimation', false);
             this.addChild(spriter);
-
-            //spriter.unscheduleUpdate();//pause
-            //spriter.scheduleUpdate();//resume
-
         }
 
     });
