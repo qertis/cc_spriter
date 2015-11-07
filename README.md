@@ -1,21 +1,25 @@
 # cc_spriter
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
-# Demo structure
+### Structure
+----------
 
-| cocos2d-html5
-| demo
-  | .cocos-project.json
-  | res
-  | index.html
-  | main.js
-  | project.json
-| node_modules
-| spriter.js
+```sh
+├- cocos2d-html5/
+├- node_modules/
+├- demo/
+├─- .cocos-project.json
+├─- res
+├─- index.html
+├─- main.js
+├─- project.json
+└- spriter.js
+```
 
+### Usage:
+----------
 
-# Usage:
-
+```js
 var spriter = new cc.Spriter(pathToScon, entityName);
 
 spriter.play('NewAnimation', <loopValue>);
@@ -23,3 +27,7 @@ spriter.play('NewAnimation', <loopValue>);
 spriter.unscheduleUpdate(); //pause
 
 spriter.scheduleUpdate();   //resume
+```
+
+### DEMO:
+http://goo.gl/z98WXo
