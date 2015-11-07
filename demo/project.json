@@ -6,12 +6,11 @@
   "id" : "gameCanvas",
   "renderMode" : 0,
   "loadExtension" : true,
-  "engineDir" : "cocos2d-html5",
+  "engineDir" : "../cocos2d-html5",
   "modules" : [
-    "cocos2d",
-    "pluginx"
+    "cocos2d"
   ],
   "jsList": [
-    "spriter.js"
+    "../spriter.js"
   ]
 }
