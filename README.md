@@ -1,6 +1,9 @@
 # cc_spriter
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
+<a href="http://www.brashmonkey.com/">
+<img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192"></a>
+
 ### Structure
 ----------
 
