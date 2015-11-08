@@ -5,3 +5,4 @@ out
 gen
 /cocos2d-html5
 /node_modules
+/demo/publish/

@@ -2,14 +2,14 @@
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
 <a href="http://www.brashmonkey.com/">
-<img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192"></a>
+  <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
+</a>
 
 ### Structure
 ----------
 
 ```sh
 ├- cocos2d-html5/
-├- node_modules/
 ├- demo/
 ├─- .cocos-project.json
 ├─- res
@@ -24,13 +24,11 @@ Cocos2d-HTML5 Spriter scml (scon) Implementation
 
 ```js
 var spriter = new cc.Spriter(pathToScon, entityName);
-
 spriter.play('NewAnimation', <loopValue>);
-
-spriter.unscheduleUpdate(); //pause
-
-spriter.scheduleUpdate();   //resume
+//spriter.unscheduleUpdate(); //pause
+//spriter.scheduleUpdate();   //resume
 ```
 
 ### DEMO:
+----------
 http://goo.gl/z98WXo
