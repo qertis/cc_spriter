@@ -1,0 +1,26 @@
+{
+  "name": "cc_spriter",
+  "version": "1.0.0",
+  "homepage": "https://github.com/qertis/cc_spriter",
+  "authors": [
+    "Denis Baskovsky <denis@baskovsky.ru>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "spriter",
+    "cocos2d animation"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "cocos2d-html5": "*"
+  }
+}
