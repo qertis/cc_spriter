@@ -14,6 +14,7 @@
     cc.Spriter = cc.Sprite.extend({
         container: null,
         sconLink: '',
+        _ready: false,
 
         /**
          * Spriter constructor
@@ -37,7 +38,12 @@
          * @param {function} callback
          */
         preload: function (callback) {
+            var self = this;
             var sconLink = this.sconLink;
+
+            if (this._ready) {
+                return callback();
+            }
 
             cc.loader.loadJson(sconLink, function (error, scon) {
                 if (error) {
@@ -60,10 +66,13 @@
                             }
 
                             if (!cc.spriteFrameCache.getSpriteFrame(file.name)) {
-                                cc.spriteFrameCache.addSpriteFrame(new cc.Sprite(fileUrl), file.name);
+                                var spriteFrame = new cc.Sprite(fileUrl);
+                                spriteFrame.setContentSize(cc.size(file.width, file.height));
+                                cc.spriteFrameCache.addSpriteFrame(spriteFrame, file.name);
                             }
 
                             if (--loaderIndex === 0) {
+                                self._ready = true;
                                 callback(scon);
                             }
                         });
@@ -118,10 +127,11 @@
          * @param  {Boolean} stopAtEnd  Whether stop when animation is finished
          */
         play: function (anim, stopAtEnd) {
-            if (!this.entity) {
-                this.preload(function () {
-                    this.play(anim, stopAtEnd);
-                }.bind(this));
+            if (!this._ready) {
+                var self = this;
+                setTimeout(function () {
+                    self.play(anim, stopAtEnd);
+                }, 1);
             } else {
                 this.stopAtEnd = !!stopAtEnd;
                 this.isEnd = false;
@@ -390,7 +400,7 @@
          * @returns {boolean}
          */
         hasAnim: function () {
-            if(!this.entity.anims.hasOwnProperty(this.currAnimName)) {
+            if (!this.entity.anims.hasOwnProperty(this.currAnimName)) {
                 throw 'current animation not found';
             }
 
