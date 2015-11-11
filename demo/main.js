@@ -20,10 +20,13 @@ cc.game.onStart = function () {
         ctor: function () {
             this._super();
 
-            var spriter = new cc.Spriter('res/test_anim/test.scon', 'entity_000');
+            var spriter = window.spriter =  new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
             spriter.setScale(0.5);
             spriter.setPosition(cc.p(cc.winSize.width / 2, 100));
-            spriter.play('NewAnimation', false);
+            spriter.play('hi', false);
+            //spriter.play('sigh', false);
+            //spriter.play('good_job', false);
+
             this.addChild(spriter);
         }
 

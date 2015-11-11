@@ -69,6 +69,7 @@
                                 var spriteFrame = new cc.Sprite(fileUrl);
                                 spriteFrame.setContentSize(cc.size(file.width, file.height));
                                 cc.spriteFrameCache.addSpriteFrame(spriteFrame, file.name);
+                                //cc.log(file.name);
                             }
 
                             if (--loaderIndex === 0) {
@@ -84,22 +85,17 @@
         },
 
         _init: function (scon, entityName) {
-
             this.container = new cc.Node();
             this.addChild(this.container);
 
             /** @type {Data} */
             this.data = new Data(scon);
-
             /** @type {Entity} */
             this.entity = this.data.getEntity(entityName);
-
             /** @type {Array.<{tagID, tagName}>} Available tags */
             this.tags = [];
-
             /** @type {Object.<String, Object>} tagged variables */
             this.vars = {};
-
             /** @type {Array.<Bone>} */
             this.bones = [];
             /** @type {Array.<Object>} */
@@ -137,23 +133,27 @@
                 this.isEnd = false;
                 this.currAnimName = anim;
 
+                if (this.currAnimName === '') {
+                    throw 'currAnimName is null';
+                }
+
                 var currAnim = this.currAnim();
                 if (this.hasAnim(currAnim)) {
                     this.time = currAnim.minTime;
                 }
 
                 this.elapsedTime = 0;
-                this.dirty = true;
+                this.setDirty(true);
 
                 this.scheduleUpdate();
             }
         },
 
+        /**
+         * redraw every tick
+         * @param {Number} dt
+         */
         update: function (dt) {
-            if (this.currAnimName === '') {
-                throw 'currAnimName is null';
-            }
-
             var elapsed = (dt * 1000) | 0;
             var i = 0,
                 j = 0,
@@ -175,12 +175,12 @@
             if (!this.dirty) {
                 return;
             }
-            this.dirty = false;
+            this.setDirty(false);
 
             var anim = this.currAnim();
 
             if (!anim) {
-                return false;
+                return;
             }
 
             var time = this.time;
@@ -295,15 +295,13 @@
             // Clamp output object array
             pose_object_array.length = data_object_array.length;
 
-            // Remove children, add them back later to ensure the
-            // correct z-index
-            for (i = 0, len = this.children.length; i < len; i++) {
-                this.children[i].parent = null;
-            }
-            this.children.length = 0;
+            /* TODO:
+            * Проблема - появляется ненужные анимации, плюс не работает правильно zIndex
+            **/
 
             // Update transform of objects
             var object;
+            var texture;
             for (i = 0, len = pose_object_array.length; i < len; i++) {
                 object = pose_object_array[i];
                 bone = pose_bone_array[object.parentID];
@@ -312,7 +310,7 @@
                 } else {
                     object.worldSpace.copy(object.localSpace);
                 }
-                var texture = sprAnim.data.getFileTexture(object.folderID, object.fileID);
+                texture = sprAnim.data.getFileTexture(object.folderID, object.fileID);
 
                 var offset_x = (0.5 - object.pivot.x) * texture.width;
                 var offset_y = (0.5 - object.pivot.y) * texture.height;
@@ -327,7 +325,6 @@
                 if (!sprite) {
                     var obj = timeline.keyframes[0].object;
                     sprite = new cc.Sprite(sprAnim.data.getFileTexture(obj.folderID, obj.fileID));
-
                     sprite.anchorX = sprite.anchorY = 0.5;
                     sprite.setName(timeline.name);
                     sprites[timeline.name] = sprite;
@@ -335,6 +332,17 @@
                     this.container.addChild(sprite);
                 } else {
                     sprite = this.container.getChildByName(timeline.name);
+                    sprite.setParent(this.container);
+                    //sprite.setTexture(texture);//TODO remove?
+
+//TEST
+// Скрываем все неиспользуемые спрайты
+                    var x = sprites['palm3'];
+                    if(x) {
+                        //x.setOpacity(50)
+                    }
+                    //x.setOpacity(1);
+//TEST END
                 }
 
                 // Apply transform
@@ -342,11 +350,8 @@
                 sprite.setPosition(cc.p(model.position.x, model.position.y));
                 sprite.setRotation(cc.radiansToDegrees(-object.worldSpace.rotation.rad));
                 sprite.setScale(model.scale.x, model.scale.y);
-
                 sprite.setOpacity(object.alpha * 255);
-
-                sprite.parent = sprAnim;
-                sprAnim.children.push(sprite);
+                sprite.setLocalZOrder(data_object.zIndex);
             }
 
             // Update variables (valline)
@@ -438,7 +443,7 @@
             if (this.time !== time) {
                 this.time = time;
                 this.elapsedTime = 0;
-                this.dirty = true;
+                this.setDirty(true);
             }
         }
 
@@ -469,7 +474,6 @@
             this.rad = other.rad;
             return this;
         },
-
 
         /**
          * @return {Angle}
@@ -1160,7 +1164,7 @@
             this.parentID = loadInt(json, 'parent', -1);
             this.timelineID = loadInt(json, 'timeline', -1);
             this.keyframeID = loadInt(json, 'key', -1);
-            this.zIndex = loadInt(json, 'zIndex', 0);
+            this.zIndex = loadInt(json, 'z_index', 0);
 
             return this;
         },
@@ -1828,6 +1832,7 @@
      */
     function wrapAngleRadians(angle) {
         if (angle <= 0) {
+            //cc.log('xxx')
             return ((angle - Math.PI) % (2 * Math.PI)) + Math.PI;
         } else {
             return ((angle + Math.PI) % (2 * Math.PI)) - Math.PI;
