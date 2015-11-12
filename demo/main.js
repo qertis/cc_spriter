@@ -22,12 +22,22 @@ cc.game.onStart = function () {
 
             var spriter = window.spriter =  new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
             spriter.setScale(0.5);
-            spriter.setPosition(cc.p(cc.winSize.width / 2, 100));
+            spriter.setPosition(cc.p(cc.winSize.width / 2 - 100, 100));
             spriter.play('hi', false);
             //spriter.play('sigh', false);
             //spriter.play('good_job', false);
-
             this.addChild(spriter);
+
+
+            var spriter2 = new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
+            spriter2.setScale(0.5);
+            spriter2.setPosition(cc.p(cc.winSize.width / 2 + 100, 100));
+            //spriter2.play('hi', false);
+            //spriter2.play('sigh', false);
+            spriter2.play('good_job', false);
+            this.addChild(spriter2);
+
+
         }
 
     });

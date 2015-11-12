@@ -295,13 +295,20 @@
             // Clamp output object array
             pose_object_array.length = data_object_array.length;
 
-            /* TODO:
-            * Проблема - появляется ненужные анимации, плюс не работает правильно zIndex
-            **/
-
             // Update transform of objects
             var object;
             var texture;
+
+            /* TODO:
+             * Проблема - появляется ненужные анимации, плюс не работает правильно zIndex
+             *
+             * По-идее: удаляется спрайт на нужном кифрейме, вставляется другой спрайт и прикрепляется к кости
+             **/
+            this.container.children.forEach(function (e) {
+                e.setOpacity(0);
+                //e.setVisible(false);
+            });
+
             for (i = 0, len = pose_object_array.length; i < len; i++) {
                 object = pose_object_array[i];
                 bone = pose_bone_array[object.parentID];
@@ -333,16 +340,8 @@
                 } else {
                     sprite = this.container.getChildByName(timeline.name);
                     sprite.setParent(this.container);
+                    //sprite.setVisible(true);
                     //sprite.setTexture(texture);//TODO remove?
-
-//TEST
-// Скрываем все неиспользуемые спрайты
-                    var x = sprites['palm3'];
-                    if(x) {
-                        //x.setOpacity(50)
-                    }
-                    //x.setOpacity(1);
-//TEST END
                 }
 
                 // Apply transform
