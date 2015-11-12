@@ -28,15 +28,18 @@ cc.game.onStart = function () {
             //spriter.play('good_job', false);
             this.addChild(spriter);
 
+            var self = this;
 
-            var spriter2 = new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
-            spriter2.setScale(0.5);
-            spriter2.setPosition(cc.p(cc.winSize.width / 2 + 100, 100));
-            //spriter2.play('hi', false);
-            //spriter2.play('sigh', false);
-            spriter2.play('good_job', false);
-            this.addChild(spriter2);
+            setTimeout(function () {
+                var spriter2 = new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
+                spriter2.setScale(0.5);
+                spriter2.setPosition(cc.p(cc.winSize.width / 2 + 100, 100));
+                //spriter2.play('hi', false);
+                spriter2.play('sigh', false);
+                //spriter2.play('good_job', false);
+                self.addChild(spriter2);
 
+            }, 100);
 
         }
 
