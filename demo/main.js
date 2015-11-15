@@ -20,6 +20,11 @@ cc.game.onStart = function () {
         ctor: function () {
             this._super();
 
+            add_file("char_animation/", "animation_list.scon");
+            file = files[file_index];
+
+
+
             var spriter = window.spriter =  new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
             spriter.setScale(0.5);
             spriter.setPosition(cc.p(cc.winSize.width / 2 - 100, 100));
@@ -31,13 +36,13 @@ cc.game.onStart = function () {
             var self = this;
 
             setTimeout(function () {
-                var spriter2 = new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
-                spriter2.setScale(0.5);
-                spriter2.setPosition(cc.p(cc.winSize.width / 2 + 100, 100));
+                //var spriter2 = new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
+                //spriter2.setScale(0.5);
+                //spriter2.setPosition(cc.p(cc.winSize.width / 2 + 100, 100));
                 //spriter2.play('hi', false);
-                spriter2.play('sigh', false);
+                //spriter2.play('sigh', false);
                 //spriter2.play('good_job', false);
-                self.addChild(spriter2);
+                //self.addChild(spriter2);
 
             }, 100);
 
