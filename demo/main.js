@@ -1,3 +1,26 @@
+var anim_time = 0;
+var anim_length = 0;
+var anim_rate = 1;
+var anim_repeat = 1;
+var prev_time = 0;
+var files = [];
+
+var file_index = 0;
+var entity_index = 0;
+var anim_index = 3;
+var loading = false;
+var file = files[file_index];
+
+
+var add_file = function (path, scon_url, atlas_url) {
+    var file = {};
+    file.path = path;
+    file.scon_url = scon_url;
+    file.atlas_url = atlas_url || "";
+    files.push(file);
+};
+
+
 cc.game.onStart = function () {
     cc.view.setDesignResolutionSize(480, 320, cc.ResolutionPolicy.SHOW_ALL);
     cc.view.resizeWithBrowserSize(true);
@@ -28,9 +51,9 @@ cc.game.onStart = function () {
             var spriter = window.spriter =  new cc.Spriter('res/char_animation/animation_list.scon', 'anim_list');
             spriter.setScale(0.5);
             spriter.setPosition(cc.p(cc.winSize.width / 2 - 100, 100));
-            spriter.play('hi', false);
+            //spriter.play('hi', false);
             //spriter.play('sigh', false);
-            //spriter.play('good_job', false);
+            spriter.play('good_job', false);
             this.addChild(spriter);
 
             var self = this;
@@ -52,3 +75,5 @@ cc.game.onStart = function () {
 
 };
 cc.game.run();
+
+

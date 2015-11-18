@@ -8,36 +8,6 @@
  * - Jason Andersen jgandersen@gmail.com
  * - Isaac Burns isaacburns@gmail.com
  */
-
-
-var file_index = 0;
-var entity_index = 0;
-var anim_index = 0;
-var anim_time = 0;
-var anim_length = 0;
-var anim_rate = 1;
-var anim_repeat = 2;
-var prev_time = 0;
-var files = [];
-var file = files[file_index];
-
-
-var file_index = 0;
-var entity_index = 0;
-var anim_index = 0;
-var loading = false;
-var file = files[file_index];
-
-
-var add_file = function (path, scon_url, atlas_url) {
-    var file = {};
-    file.path = path;
-    file.scon_url = scon_url;
-    file.atlas_url = atlas_url || "";
-    files.push(file);
-}
-
-
 !(function (cc) {
     'use strict';
 
@@ -82,7 +52,6 @@ var add_file = function (path, scon_url, atlas_url) {
                 var _rootPath = scon._rootPath = sconLink.replace(/\w+.scon$/, '');
                 var loaderIndex = 0;
 
-
                 scon.folder.forEach(function (folder) {
                     folder.file.forEach(function () {
                         ++loaderIndex;
@@ -100,9 +69,7 @@ var add_file = function (path, scon_url, atlas_url) {
                                 var spriteFrame = new cc.Sprite(fileUrl);
                                 spriteFrame.setContentSize(cc.size(file.width, file.height));
                                 cc.spriteFrameCache.addSpriteFrame(spriteFrame, file.name);
-                                //cc.log(file.name);
                             }
-
 
                             if (--loaderIndex === 0) {
 
@@ -129,31 +96,31 @@ var add_file = function (path, scon_url, atlas_url) {
             this.addChild(this.container);
 
             /** @type {Data} */
-            this.data = new Data(scon);
+            //this.data = new Data(scon);
             /** @type {Entity} */
-            this.entity = this.data.getEntity(entityName);
+            //this.entity = this.data.getEntity(entityName);
             /** @type {Array.<{tagID, tagName}>} Available tags */
-            this.tags = [];
+            //this.tags = [];
             /** @type {Object.<String, Object>} tagged variables */
-            this.vars = {};
+            //this.vars = {};
             /** @type {Array.<Bone>} */
-            this.bones = [];
+            //this.bones = [];
             /** @type {Array.<Object>} */
-            this.objects = [];
+            //this.objects = [];
             /** @type {string} */
-            this.currAnimName = '';
+            //this.currAnimName = '';
             /** @type {number} */
-            this.time = 0;
+            //this.time = 0;
             /** @type {number} */
             this.elapsedTime = 0;
             /** @type {Boolean} Whether current animation is ended */
-            this.isEnd = true;
+            //this.isEnd = true;
             /** @type {Boolean} Whether stop instead of loop at the end of current animation */
-            this.stopAtEnd = false;
+            //this.stopAtEnd = false;
             /** @type {boolean} */
-            this.dirty = true;
+            //this.dirty = true;
             /** * Stores all the sprite instances for this entity */
-            this.sprites = {};
+            //this.sprites = {};
         },
 
         /**
@@ -179,7 +146,7 @@ var add_file = function (path, scon_url, atlas_url) {
 
                 console.log('play');
 
-                xxx.setAnim(anim);
+                //xxx.setAnim(anim);
 
                 //if (this.currAnimName === '') {
                 //    throw 'currAnimName is null';
@@ -191,455 +158,182 @@ var add_file = function (path, scon_url, atlas_url) {
                 //    this.time = currAnim.minTime;
                 //}
 
-                //this.elapsedTime = 0;
+                this.elapsedTime = 0;
                 //this.setDirty(true);
 
                 this.scheduleUpdate();
+
+
+                //TEST
+                xxx.setEntity('anim_list');
+                //TEST END
+
             }
+
+            window.self = this;
         },
 
         /**
          * redraw every tick
-         * @param {Number} dt
+         * @param {Number} time
          */
-        update: function (dt) {
+        update: function (time) {
             var self = window.self = this;
-            var elapsed = (dt * 1000) | 0;
+            time = (time * 1000) | 0;
 
-            //var dt = time - (prev_time || time);
-            var dt = elapsed - (prev_time || elapsed);
-            //prev_time = time; // ms
-            prev_time = elapsed; // ms
+            //var dt = time - (prev_time || time);  {
+            //    prev_time = time;
+            //} // ms
 
-            xxx.update(dt * anim_rate);
-            //xxx.update(elapsed);
+//dt *= 1000;
+            //anim_time += dt * anim_rate;
+            //anim_time *= cc.math.EPSILON//TEST
 
-            anim_time += dt * anim_rate;
 
-            anim_time *= cc.math.EPSILON//TEST
+            // Update body parts
+            //if (!this.dirty) {
+            //    return;
+            //}
+            //this.setDirty(false);
 
-            var anim_keys = xxx.getAnimKeys();
 
-            if (anim_time >= (anim_length * anim_repeat) || anim_time < -9999999) {
-                var anim_keys = xxx.getAnimKeys();
-                if (++anim_index >= anim_keys.length) {
-                    anim_index = 0;
-                    var entity_keys = xxx.getEntityKeys();
-                    if (++entity_index >= entity_keys.length) {
-                        entity_index = 0;
-                        if (files.length > 1) {
-                            if (++file_index >= files.length) {
-                                file_index = 0;
-                            }
-                            file = files[file_index];
-                            //messages.innerHTML = "loading";
-                            loading = true;
-                            loadFile(file, function () {
-                                loading = false;
-                                var entity_keys = xxx.getEntityKeys();
-                                xxx.setEntity(entity_keys[entity_index = 0]);
-                                var anim_keys = xxx.getAnimKeys();
-                                xxx.setAnim(anim_keys[anim_index = 0]);
-                                xxx.setTime(anim_time = 0);
-                                anim_length = xxx.curAnimLength() || 1000;
-                            });
-                            return;
-                        }
-                    }
-                    xxx.setEntity(entity_keys[entity_index]);
-                }
-                xxx.setAnim(anim_keys[anim_index]);
-                xxx.setTime(anim_time = 0);
-                anim_length = xxx.curAnimLength() || 1000;
-            }
+            xxx.update(time);
+
+
+            anim_time += time * anim_rate;
 
             var entity_keys = xxx.getEntityKeys();
+            xxx.setEntity(entity_keys[entity_index]);
             var anim_keys = xxx.getAnimKeys();
-            debug.innerHTML =  "entity: " + entity_keys[entity_index] + ", anim: " + anim_keys[anim_index] + "<br>" + file.path + file.scon_url;
+            xxx.setAnim(anim_keys[anim_index]);
+            anim_length = xxx.curAnimLength() || 1000;
 
-            /*TODO: Очистка сцены */
-            self/*.container.*/.children.forEach(function (e) {
-                //e.setOpacity(10);
-                e.removeFromParent();
-            });
+            //debug.innerHTML = "entity: " + entity_keys[entity_index] + ", anim: " + anim_keys[anim_index] + "<br>" + file.path + file.scon_url;
 
+            ///*TODO: Очистка сцены
+            /*self.container.children.forEach(function (e) {
+             e.setOpacity(0);
+             });
+             */
 
-            if (loading) { return; }
 
             xxx.strike();
 
 
+            //xxx.setTime(anim_time = 0);
+            if (anim_time >= (anim_length * anim_repeat)) {
+                //xxx.setAnim(anim_keys[anim_index]);
+
+                //debugger;
+                xxx.setTime(anim_time = 0);
+                //anim_length = spriter_pose.curAnimLength() || 1000;
+                //anim_length = xxx.curAnimLength() || 1000;
+            }
 
 
-            if (/*enable_render_ctx2d*/true)
-            {
-                //render_ctx2d.drawPose(spriter_pose, atlas_data);
-                //var images = render.images;
-                xxx.object_array.forEach(function (object)
-                {
+            if (true) {
+                xxx.object_array.forEach(function (object, i) {
                     var folder = xxx.data.folder_array[object.folder_index];
-
-                    if (!folder) { return; }
+                    if (!folder) {
+                        return;
+                    }
                     var file = folder.file_array[object.file_index];
-                    if (!file) { return; }
-                    //var site = atlas_data && atlas_data.sites[file.name];
-                    //var page = site && atlas_data.pages[site.page];
-                    var image_key = /*(page && page.name) || */file.name;
+                    if (!file) {
+                        return;
+                    }
+                    var image_key = file.name;
 
-                    var image = /*images[image_key]*/cc.spriteFrameCache.getSpriteFrame(image_key);
-                    if (image /*&& image.complete*/)
-                    {
+                    var image = /*images[image_key]   */cc.spriteFrameCache.getSpriteFrame(image_key);
+
+                    if (image) {
+                        window.images = window.images || {};
+
                         //ctxApplySpace(ctx, object.world_space);
                         //ctx.scale(file.width/2, file.height/2);
-                        //object.alpha;
 
-                        object.local_space.position.x;
-                        object.local_space.position.y;
-                        //if(!self./*container.*/getChildByName(image_key)) {
-
+                        if (!images[i]) {
                             var img = new cc.Sprite();
 
                             img.setTexture(image.getTexture());
                             img.setName(image_key);
 
-                            //img.x = object.local_space.position.x;
-                            //img.y = object.local_space.position.y;
-                            //img.rotation = cc.radiansToDegrees(object.world_space.rotation.rad);
+                            //img.x = object.world_space.position.x;
+                            //img.y = object.world_space.position.y;
+                            //img.rotation = cc.radiansToDegrees(-object.world_space.rotation.rad);
 
 
-                            //self.addChild(img);
-                            self./*container.*/addChild(img);
-                            img.setParent(self);
-                        //} else {
-                        //    img = self./*container.*/getChildByName(image_key);
-                        //    img.setOpacity(255)
+                            images[i] = img;
 
-                            //img.x = object.local_space.position.x;
-                            //img.y = object.local_space.position.y;
-                            //img.rotation = -cc.radiansToDegrees(object.local_space.rotation.rad);
-
+                            self.container.addChild(img);
+                            //img.setParent(self);
+                        } else {
+                            //if(images[i].XXX) {
+                            //    return;
+                            //}
+                            img = images[i];
 
                             img.setPosition(cc.p(object.world_space.position.x, object.world_space.position.y));
                             img.setRotation(cc.radiansToDegrees(-object.world_space.rotation.rad));
                             img.setScale(object.world_space.scale.x, object.world_space.scale.y);
                             img.setOpacity(object.alpha * 255);
-                            //img.setLocalZOrder(timeline.keyframes[0].object.zIndex);
 
 
-                        //}
+                            images[i].XXX = true;
 
+                            //img.setAnchorPoint(cc.p(1 - object.pivot.x, 1 - object.pivot.y));
+
+
+                            //img.setLocalZOrder(object.z_index);
+                        }
 
                     }
                 });
             }
+            //xxx.setTime(xxx.time + elapsed);
 
-            if (/*enable_render_debug_pose*/ false)
-            {
+            if (false) {
                 //render_ctx2d.drawDebugPose(spriter_pose, atlas_data);
             }
 
+            /*
+             *
+             */
 
             return;
-            var elapsed = (dt * 1000) | 0;
-            var i = 0,
-                j = 0,
-                len = 0;
-            var sprAnim = this;
-            var bone,
-                timelineID,
-                timeline,
-                tween,
-                bone1,
-                keyframeID,
-                timeline_keyframe_array,
-                timeline_keyframe;
 
-            // Update timer
-            this.setTime(this.time + elapsed);
 
-            // Update body parts
-            if (!this.dirty) {
-                return;
-            }
-            this.setDirty(false);
-
-            var anim = this.currAnim();
-
-            if (!anim) {
-                return;
-            }
-
-            var time = this.time;
-            this.elapsedTime = 0; // reset for next update
-
-            var mainline_keyframe_array = anim.mainline.keyframes;
-            var mainline_keyframe_index = Keyframe.find(mainline_keyframe_array, time);
-            var mainline_keyframe = mainline_keyframe_array[mainline_keyframe_index];
-
-            var timelines = anim.timelines;
-
-            // Update bones
-            var data_bone_array = mainline_keyframe.bones;
-            var pose_bone_array = sprAnim.bones;
-
-            var data_bone;
-            for (i = 0, len = data_bone_array.length; i < len; i++) {
-                data_bone = data_bone_array[i];
-                var pose_bone = pose_bone_array[i] = (pose_bone_array[i] || new Bone());
-
-                if (data_bone instanceof BoneRef) {
-                    // bone is a BoneRef, dereference
-                    timelineID = data_bone.timelineID;
-                    keyframeID = data_bone.keyframeID;
-                    timeline = timelines[timelineID];
-                    timeline_keyframe_array = timeline.keyframes;
-                    timeline_keyframe = timeline_keyframe_array[keyframeID];
-
-                    time1 = timeline_keyframe.time;
-                    bone1 = timeline_keyframe.bone;
-                    pose_bone.copy(bone1);
-                    pose_bone.parentID = data_bone.parentID; // set parent from bone_ref
-
-                    // see if there's something to tween with
-                    keyframe_index2 = (keyframeID + 1) % timeline_keyframe_array.length;
-                    if (keyframeID !== keyframe_index2) {
-                        timeline_keyframe2 = timeline_keyframe_array[keyframe_index2];
-                        time2 = timeline_keyframe2.time;
-                        if (time2 < time1) {
-                            time2 = anim.length;
-                        }
-                        var bone2 = timeline_keyframe2.bone;
-
-                        tween = timeline_keyframe.evaluateCurve(time, time1, time2);
-                        pose_bone.tween(bone2, tween, timeline_keyframe.spin);
-                    }
-                } else if (data_bone instanceof Bone) {
-                    // bone is a Bone, copy
-                    pose_bone.copy(data_bone);
-                } else {
-                    throw new Error();
-                }
-            }
-
-            // Clamp output bone array
-            pose_bone_array.length = data_bone_array.length;
-
-            for (i = 0, len = pose_bone_array.length; i < len; i++) {
-                bone = pose_bone_array[i];
-                var parent_bone = pose_bone_array[bone.parentID];
-                if (parent_bone) {
-                    Transform.combine(parent_bone.worldSpace, bone.localSpace, bone.worldSpace);
-                } else {
-                    bone.worldSpace.copy(bone.localSpace);
-                }
-            }
-
-            // Update objects
-            var data_object_array = mainline_keyframe.objects;
-            var pose_object_array = sprAnim.objects;
-
-            var data_object;
-            for (i = 0, len = data_object_array.length; i < len; i++) {
-                data_object = data_object_array[i];
-                var pose_object = pose_object_array[i] = (pose_object_array[i] || new Obj());
-
-                if (data_object instanceof ObjectRef) {
-                    // object is a ObjectRef, dereference
-                    timelineID = data_object.timelineID;
-                    keyframeID = data_object.keyframeID;
-                    timeline = timelines[timelineID];
-                    timeline_keyframe_array = timeline.keyframes;
-                    timeline_keyframe = timeline_keyframe_array[keyframeID];
-
-                    var time1 = timeline_keyframe.time;
-                    var object1 = timeline_keyframe.object;
-
-                    pose_object.copy(object1);
-                    pose_object.parentID = data_object.parentID; // set parent from object_ref
-
-                    // see if there's something to tween with
-                    var keyframe_index2 = (keyframeID + 1) % timeline_keyframe_array.length;
-                    if (keyframeID !== keyframe_index2) {
-                        var timeline_keyframe2 = timeline_keyframe_array[keyframe_index2];
-                        var time2 = timeline_keyframe2.time;
-                        if (time2 < time1) {
-                            time2 = anim.length;
-                        }
-                        var object2 = timeline_keyframe2.object;
-
-                        tween = timeline_keyframe.evaluateCurve(time, time1, time2);
-                        pose_object.tween(object2, tween, timeline_keyframe.spin);
-                    }
-                } else if (data_object instanceof Object) {
-                    // object is a Object, copy
-                    pose_object.copy(data_object);
-                } else {
-                    throw new Error();
-                }
-            }
-
-            // Clamp output object array
-            pose_object_array.length = data_object_array.length;
-
-            // Update transform of objects
-            var object;
-            var texture;
-
-            this.container.children.forEach(function (e) {
-                e.setOpacity(0);
-            });
+            //var time = this.time;
+            //this.elapsedTime = 0; // reset for next update
 
 
             //TEST DEBUG
-            sprAnim.children.forEach(function (e) {
-                var d = sprAnim.getChildByTag('debug');
-                if (d) {
-                    d.removeFromParent();
-                }
-            });
+            //sprAnim.children.forEach(function (e) {
+            //    var d = sprAnim.getChildByTag('debug');
+            //    if (d) {
+            //        d.removeFromParent();
+            //    }
+            //});
             //TEST END
 
-
-            for (i = 0, len = pose_object_array.length; i < len; i++) {
-                object = pose_object_array[i];
-                bone = pose_bone_array[object.parentID];
-                if (bone) {
-                    Transform.combine(bone.worldSpace, object.localSpace, object.worldSpace);
-                } else {
-                    object.worldSpace.copy(object.localSpace);
-                }
-                texture = sprAnim.data.getFileTexture(object.folderID, object.fileID);
-
-                var offset_x = (0.5 - object.pivot.x) * texture.width;
-                var offset_y = (0.5 - object.pivot.y) * texture.height;
-
-                Transform.translate(object.worldSpace, offset_x, offset_y);
-
-                timelineID = data_object_array[i].timelineID;
-                timeline = timelines[timelineID];
-
-                var sprites = sprAnim.sprites;
-                var sprite = sprites[timeline.name];
-
-                if (!sprite) {
-                    var obj = timeline.keyframes[0].object;
-                    sprite = new cc.Sprite(sprAnim.data.getFileTexture(obj.folderID, obj.fileID));
-                    //sprite.anchorX = sprite.anchorY = 0.5;
-
-                    //TEST
-                    /* TODO:
-                     * Проблема - правильно работает анимация palm1
-                     * По-идее: удаляется спрайт на нужном кифрейме, вставляется другой спрайт и прикрепляется к кости
-                     * Что-то есть такое в анимации palm1, palm1_000  что отличает ее от всех остальных
-                     **/
-//sprAnim.data.getFilePivot
-
-                    //cc.log(timeline.name)
-                    if (timeline.name === 'palm1' || timeline.name === 'palm1_000') {
-                        //sprite.anchorY = 0.5 - object.pivot.y;// - 0.5
-                        //object.worldSpace.position.y += offset_y;
-
-                        //sprite.anchorY = 0.5 - timeline.keyframes[0].object.pivot.y;
-
-                        object.pivot.y;
-                        //data_object.pivot.y
-                        //pose_object.pivot.y
-
-                    } else if (timeline.name === 'palm2') {
-                        //sprite.anchorY = 0.5 - timeline.keyframes[0].object.pivot.y;
-                        //cc.log(22)
-
-                    } else {
-                        //xxx
-                    }
-                    //cc.log((object.pivot.y - data_object.pivot.y - pose_object.pivot.y) || 0.5);
-                    //cc.log(timeline.type)
-                    //TEST END
-
-
-                    sprite.setName(timeline.name);
-                    sprites[timeline.name] = sprite;
-
-                    this.container.addChild(sprite);
-                } else {
-                    sprite = this.container.getChildByName(timeline.name);
-                    sprite.setParent(this.container);
-                }
-
-                // Apply transform
-                var model = object.worldSpace;
-                sprite.setPosition(cc.p(model.position.x, model.position.y));
-                sprite.setRotation(cc.radiansToDegrees(-object.worldSpace.rotation.rad));
-                sprite.setScale(model.scale.x, model.scale.y);
-                sprite.setOpacity(object.alpha * 255);
-                sprite.setLocalZOrder(timeline.keyframes[0].object.zIndex);
-
-                /* TEST DEBUG
-                 if(bone) {
-                 var boneNode = new cc.DrawNode();
-                 boneNode.drawCircle(cc.p(model.position.x, model.position.y),
-                 15, 0, 15, true, 2, cc.color.YELLOW);
-                 boneNode.setTag('debug');
-                 this.addChild(boneNode);
-                 } else {
-                 var line = new cc.DrawNode();
-                 line.drawRect(
-                 cc.p(0.5, 0.5),
-                 cc.p(model.position.x, model.position.y),
-                 cc.color.RED,
-                 1
-                 );
-                 line.setTag('debug');
-                 this.addChild(line);
-                 }
-                 /* TEST END */
-
-
-            }
-
-            // Update variables (valline)
-            var vallines = anim.vallines;
-            var valline, jlen, valKey;
-            if (vallines) {
-                for (i = 0, len = vallines.length; i < len; i++) {
-                    valline = vallines[i];
-                    for (j = 0, jlen = valline.keys.length; j < jlen; j++) {
-                        valKey = valline.keys[j];
-                        // This key is between last frame and this frame
-                        if (valKey.time <= time && valKey.time >= time - elapsed) {
-                            this.vars[valline.name] = valKey.val;
-                        }
-                    }
-                }
-            }
-
-            // Update tags (tagline)
-            var tagline = anim.tagline;
-            var tag;
-            if (tagline) {
-                for (i = 0, len = tagline.keys.length; i < len; i++) {
-                    tag = tagline.keys[i];
-                    // This key is between last frame and this frame
-                    if (tag.time <= time && tag.time >= time - elapsed) {
-                        this.tags = tag.tags;
-                    }
-                }
-            }
-
-            // Update events (eventlines)
-            //var eventlines = anim.eventlines;
-            //var eventline, event;
-            //if (eventlines) {
-            //    for (i = 0, len = eventlines.length; i < len; i++) {
-            //        eventline = eventlines[i];
-            //        for (j = 0, jlen = eventline.keys.length; j < jlen; j++) {
-            //            event = eventline.keys[j];
-            // This key is between last frame and this frame
-            //if (event.time <= time && event.time >= time - elapsed) {
-            //}
-            //}
-            //}
-            //}
+            /* TEST DEBUG
+             if(bone) {
+             var boneNode = new cc.DrawNode();
+             boneNode.drawCircle(cc.p(model.position.x, model.position.y),
+             15, 0, 15, true, 2, cc.color.YELLOW);
+             boneNode.setTag('debug');
+             this.addChild(boneNode);
+             } else {
+             var line = new cc.DrawNode();
+             line.drawRect(
+             cc.p(0.5, 0.5),
+             cc.p(model.position.x, model.position.y),
+             cc.color.RED,
+             1
+             );
+             line.setTag('debug');
+             this.addChild(line);
+             }
+             /* TEST END */
 
         },
 
@@ -660,6 +354,7 @@ var add_file = function (path, scon_url, atlas_url) {
          * @return {Animation}
          */
         currAnim: function () {
+            window.self = this;
             return this.entity.anims[this.currAnimName];
         },
 
@@ -909,6 +604,7 @@ var add_file = function (path, scon_url, atlas_url) {
     var Rotation = Angle.extend({
         ctor: function () {
             this._super();
+
             //goog.base(this, 0);
         }
     });
@@ -932,6 +628,7 @@ var add_file = function (path, scon_url, atlas_url) {
     var Pivot = Vector.extend({
         ctor: function () {
             this._super();
+
             //goog.base(this, 0, 1);
         },
         selfIdentity: function () {
@@ -1338,8 +1035,8 @@ var add_file = function (path, scon_url, atlas_url) {
         },
 
         /**
-         * @return {spriter.Object}
-         * @param {spriter.Object} other
+         * @return {Object}
+         * @param {Object} other
          */
         copy: function (other) {
             this.id = other.id;
@@ -1358,7 +1055,7 @@ var add_file = function (path, scon_url, atlas_url) {
 
         /**
          * @return {void}
-         * @param {spriter.Object} other
+         * @param {Object} other
          * @param {number} tween
          * @param {number} spin
          */
@@ -1447,7 +1144,7 @@ var add_file = function (path, scon_url, atlas_url) {
      * @param {number} y
      */
     Transform.translate = function (space, x, y) {
-        //cc.log('depricated')
+        cc.log('depricated')
         return;
 
         x *= space.scale.x;
@@ -1655,27 +1352,15 @@ var add_file = function (path, scon_url, atlas_url) {
         id: -1,
         /** @type {number} */
         parent_index: -1,
-        /** @type {spriter.Space} */
+        /** @type {Space} */
         local_space: null,
-        /** @type {spriter.Space} */
+        /** @type {Space} */
         world_space: null,
 
         ctor: function () {
             var bone = this;
             bone.local_space = new Space();
             bone.world_space = new Space();
-
-
-            /* REMOVE
-             /** @type {number} */
-            this.id = -1;
-            /** @type {number} */
-            this.parentID = -1;
-            /** @type {Transform} */
-            this.localSpace = new Transform();
-            /** @type {Transform} */
-            //this.worldSpace = new Transform();
-            /* REMOVE END */
         },
 
         /**
@@ -1687,14 +1372,6 @@ var add_file = function (path, scon_url, atlas_url) {
             this.parent_index = loadInt(json, 'parent', -1);
             this.local_space.load(json);
             this.world_space.copy(this.local_space);
-
-
-            /* REMOVE */
-            this.parentID = loadInt(json, 'parent', -1);
-            this.localSpace.load(json);
-            //this.worldSpace.copy(this.localSpace);
-            /* REMOVE END */
-
 
             return this;
         },
@@ -1717,12 +1394,6 @@ var add_file = function (path, scon_url, atlas_url) {
             this.local_space.copy(other.local_space);
             this.world_space.copy(other.world_space);
 
-            /*REMOVE
-             this.parentID = other.parentID;
-             this.localSpace.copy(other.localSpace);
-             this.worldSpace.copy(other.worldSpace);
-             /*REMOVE END*/
-
             return this;
         },
         /**
@@ -1732,7 +1403,7 @@ var add_file = function (path, scon_url, atlas_url) {
          * @param {number} spin
          */
         tween: function (other, tween, spin) {
-            Transform.tween(this.localSpace, other.localSpace, tween, spin, this.localSpace);
+            Transform.tween(this.local_space, other.local_space, tween, spin, this.local_space);
         }
     });
 
@@ -1743,31 +1414,16 @@ var add_file = function (path, scon_url, atlas_url) {
      * @param {Transform=} out
      */
     Bone.flatten = function (bone, bones, out) {
-
         out = out || new Space();
         var parent_bone = bones[bone.parent_index];
         if (parent_bone) {
             Bone.flatten(parent_bone, bones, out);
-        }
-        else {
+        } else {
             Space.identity(out);
         }
         Space.combine(out, bone.local_space, out);
+
         return out;
-
-
-        /*REMOVE
-         out = out || new Transform();
-         var parent_bone = bones[bone.parentID];
-         if (parent_bone) {
-         Bone.flatten(parent_bone, bones, out);
-         } else {
-         Transform.identity(out);
-         }
-         Transform.combine(out, bone.localSpace, out);
-
-         return out;
-         /*REMOVE END*/
     };
 
     var BoneRef = cc.Class.extend({
@@ -1779,12 +1435,7 @@ var add_file = function (path, scon_url, atlas_url) {
         keyframe_index: -1,
 
         ctor: function () {
-            /*REMOVE
-             this.id = -1;
-             this.parentID = -1;
-             this.timelineID = -1;
-             this.keyframeID = -1;
-             /*REMOVE END*/
+
         },
         /**
          * @return {BoneRef}
@@ -1792,16 +1443,9 @@ var add_file = function (path, scon_url, atlas_url) {
          */
         load: function (json) {
             this.id = loadInt(json, 'id', -1);
-            /*REMOVE
-             this.parentID = loadInt(json, 'parent', -1);
-             this.timelineID = loadInt(json, 'timeline', -1);
-             this.keyframeID = loadInt(json, 'key', -1);
-             /*REMOVE END*/
-
             this.parent_index = loadInt(json, 'parent', -1);
             this.timeline_index = loadInt(json, 'timeline', -1);
             this.keyframe_index = loadInt(json, 'key', -1);
-
 
             return this;
         },
@@ -1819,111 +1463,12 @@ var add_file = function (path, scon_url, atlas_url) {
          * @param {BoneRef} other
          */
         copy: function (other) {
-            /*REMOVE
-             this.id = other.id;
-             this.parentID = other.parentID;
-             this.timelineID = other.timelineID;
-             this.keyframeID = other.keyframeID;
-             /*REMOVE END*/
-
             this.id = other.id;
             this.parent_index = other.parent_index;
             this.timeline_index = other.timeline_index;
             this.keyframe_index = other.keyframe_index;
 
             return this;
-        }
-
-    });
-
-    var Obj = cc.Class.extend({
-        ctor: function () {
-            /** @type {number} */
-            this.id = -1;
-            /** @type {number} */
-            this.parentID = -1;
-            /** @type {number} */
-            this.folderID = -1;
-            /** @type {number} */
-            this.fileID = -1;
-            /** @type {Transform} */
-            this.localSpace = new Transform();
-            /** @type {Transform} */
-            this.worldSpace = new Transform();
-            /** @type {boolean} */
-            this.defaultPivot = false;
-            /** @type {Vector} */
-            this.pivot = new Vector(0, 1);
-            /** @type {number} */
-            this.zIndex = 0;
-            /** @type {number} */
-            this.alpha = 1;
-        },
-
-        /**
-         *
-         * @param data
-         * @param json
-         * @returns {Object.<string,?>} json
-         */
-        load: function (data, json) {
-            this.id = loadInt(json, 'id', -1);
-            this.parentID = loadInt(json, 'parent', -1);
-            this.folderID = loadInt(json, 'folder', -1);
-            this.fileID = loadInt(json, 'file', -1);
-            this.localSpace.load(json);
-            this.worldSpace.copy(this.localSpace);
-            if ((typeof json['pivot_x'] !== 'undefined') || (typeof json['pivot_y'] !== 'undefined')) {
-                this.pivot.x = loadFloat(json, 'pivot_x', 0);
-                this.pivot.y = loadFloat(json, 'pivot_y', 1);
-            } else {
-                this.defaultPivot = true;
-                this.pivot.copy(data.getFilePivot(this.folderID, this.fileID));
-            }
-            this.zIndex = loadInt(json, 'zIndex', 0);
-            this.alpha = loadFloat(json, 'a', 1);
-
-            return this;
-        },
-
-        /**
-         * @return {Obj}
-         * @param {Obj=} other
-         */
-        clone: function (other) {
-            return (other || new Obj()).copy(this);
-        },
-
-        /**
-         * @return {Obj}
-         * @param {Obj} other
-         */
-        copy: function (other) {
-            this.id = other.id;
-            this.parentID = other.parentID;
-            this.folderID = other.folderID;
-            this.fileID = other.fileID;
-            this.localSpace.copy(other.localSpace);
-            this.worldSpace.copy(other.worldSpace);
-            this.defaultPivot = other.defaultPivot;
-            this.pivot.copy(other.pivot);
-            this.zIndex = other.zIndex;
-            this.alpha = other.alpha;
-
-            return this;
-        },
-
-        /**
-         * @return {void}
-         * @param {Obj} other
-         * @param {number} twn
-         * @param {number} spin
-         */
-        tween: function (other, twn, spin) {
-            Transform.tween(this.localSpace, other.localSpace, twn, spin, this.localSpace);
-            Vector.tween(this.pivot, other.pivot, twn, this.pivot);
-
-            this.alpha = tween(this.alpha, other.alpha, twn);
         }
 
     });
@@ -1941,13 +1486,6 @@ var add_file = function (path, scon_url, atlas_url) {
         z_index: 0,
 
         ctor: function () {
-            /*REMOVE
-             this.id = -1;
-             this.parentID = -1;
-             this.timelineID = -1;
-             this.keyframeID = -1;
-             this.zIndex = 0;
-             /*REMOVE END*/
         },
 
         /**
@@ -1955,13 +1493,6 @@ var add_file = function (path, scon_url, atlas_url) {
          * @param {Object.<string,?>} json
          */
         load: function (json) {
-            /*REMOVE
-             this.id = loadInt(json, 'id', -1);
-             this.parentID = loadInt(json, 'parent', -1);
-             this.timelineID = loadInt(json, 'timeline', -1);
-             this.keyframeID = loadInt(json, 'key', -1);
-             this.zIndex = loadInt(json, 'z_index', 0);
-             /*REMOVE END*/
             this.id = loadInt(json, 'id', -1);
             this.parent_index = loadInt(json, 'parent', -1);
             this.timeline_index = loadInt(json, 'timeline', -1);
@@ -1984,13 +1515,6 @@ var add_file = function (path, scon_url, atlas_url) {
          * @param {ObjectRef} other
          */
         copy: function (other) {
-            /*REMOVE
-             this.id = other.id;
-             this.parentID = other.parentID;
-             this.timelineID = other.timelineID;
-             this.keyframeID = other.keyframeID;
-             this.zIndex = other.zIndex;
-             /*REMOVE END*/
             this.id = other.id;
             this.parent_index = other.parent_index;
             this.timeline_index = other.timeline_index;
@@ -2002,17 +1526,12 @@ var add_file = function (path, scon_url, atlas_url) {
     });
 
     var Keyframe = cc.Class.extend({
-
         /** @type {number} */
         id: -1,
         /** @type {number} */
         time: 0,
 
         ctor: function () {
-            /** @type {number} */
-            this.id = -1;
-            /** @type {number} */
-            this.time = 0;
         },
         /**
          * @return {Keyframe}
@@ -2032,37 +1551,6 @@ var add_file = function (path, scon_url, atlas_url) {
      * @param {number} time
      */
     Keyframe.find = function (array, time) {
-        /*REMOVE
-         if (array.length <= 0) {
-         return -1;
-         } else if (time < array[0].time) {
-         return -1;
-         }
-
-         var last = array.length - 1;
-         if (time >= array[last].time) {
-         return last;
-         }
-         var lo = 0;
-         var hi = last;
-         if (hi === 0) {
-         return 0;
-         }
-         var current = hi >> 1;
-         //noinspection Eslint
-         while (true) {
-         if (array[current + 1].time <= time) {
-         lo = current + 1;
-         } else {
-         hi = current;
-         }
-         if (lo === hi) {
-         return lo;
-         }
-         current = (lo + hi) >> 1;
-         }
-         /*REMOVE END*/
-
         if (array.length <= 0) {
             return -1;
         }
@@ -2107,19 +1595,13 @@ var add_file = function (path, scon_url, atlas_url) {
      */
     var MainlineKeyframe = Keyframe.extend({
 
-
-        /** @type {Array.<spriter.Bone|spriter.BoneRef>} */
+        /** @type {Array.<Bone|BoneRef>} */
         bone_array: null,
-        /** @type {Array.<spriter.Object|spriter.ObjectRef>} */
+        /** @type {Array.<Object|ObjectRef>} */
         object_array: null,
 
 
         ctor: function () {
-            /*REMOVE
-             this.bones = null;
-             this.objects = null;
-             /*REMOVE END*/
-
 
             //goog.base(this);
 
@@ -2129,51 +1611,10 @@ var add_file = function (path, scon_url, atlas_url) {
          * @return {MainlineKeyframe}
          * @param {Object.<string,?>} json
          */
-        load: function (/*data, */json) {
+        load: function (json) {
             var mainline_keyframe = this;
 
             Keyframe.prototype.load.call(this, json);
-            //it's like: goog.base(this, 'load', json)
-
-            /*REMOVE
-             var i, len;
-
-
-             // combine bones and bone_refs into one array and sort by id
-             this.bones = [];
-
-             json.bone = makeArray(json.bone);
-             for (i = 0, len = json.bone.length; i < len; i++) {
-             this.bones.push(new Bone().load(json.bone[i]));
-             }
-
-             json.bone_ref = makeArray(json.bone_ref);
-             for (i = 0, len = json.bone_ref.length; i < len; i++) {
-             this.bones.push(new BoneRef().load(json.bone_ref[i]));
-             }
-
-             this.bones = this.bones.sort(function (a, b) {
-             return a.id - b.id;
-             });
-
-             // combine objects and object_refs into one array and sort by id
-             this.objects = [];
-
-             json.object = makeArray(json.object);
-             for (i = 0, len = json.object.length; i < len; i++) {
-             this.objects.push(new Obj().load(data, json.object[i]));
-             }
-
-             json.object_ref = makeArray(json.object_ref);
-             for (i = 0, len = json.object_ref.length; i < len; i++) {
-             this.objects.push(new ObjectRef().load(json.object_ref[i]));
-             }
-
-             this.objects = this.objects.sort(function (a, b) {
-             return a.id - b.id;
-             });
-             /*REMOVE END*/
-
 
             // combine bones and bone_refs into one array and sort by id
             mainline_keyframe.bone_array = [];
@@ -2228,17 +1669,8 @@ var add_file = function (path, scon_url, atlas_url) {
          * @return {Mainline}
          * @param {Object.<string,?>} json
          */
-        load: function (/*data, */json) {
+        load: function (json) {
             var mainline = this;
-
-            /*REMOVE
-             json.key = makeArray(json.key);
-             for (var i = 0, len = json.key.length; i < len; i++) {
-             this.keyframes.push(new MainlineKeyframe().load(data, json.key[i]));
-             }
-             this.keyframes = this.keyframes.sort(Keyframe.compare);
-             /*REMOVE END*/
-
 
             mainline.keyframe_array = [];
             json.key = makeArray(json.key);
@@ -2266,7 +1698,6 @@ var add_file = function (path, scon_url, atlas_url) {
         /** @type {number} */
         c2: 0,
 
-
         /**
          * @constructor
          * @extends {Keyframe}
@@ -2275,14 +1706,6 @@ var add_file = function (path, scon_url, atlas_url) {
         ctor: function (type) {
             //goog.base(this);
             this.type = type;
-
-            /*REMOVE
-             this.type = type || '';
-             this.spin = 1; // 1: counter-clockwise, -1: clockwise
-             this.curve = 1; // 0: instant, 1: linear, 2: quadratic, 3: cubic
-             this.c1 = 0;
-             this.c2 = 0;
-             /*REMOVE END*/
         },
 
         /**
@@ -2330,8 +1753,8 @@ var add_file = function (path, scon_url, atlas_url) {
             //if (timeline_keyframe.curve === 0) { return 0; } // instant
             //var tween = (time - time1) / (time2 - time1);
             //if (timeline_keyframe.curve === 1) { return tween; } // linear
-            //if (timeline_keyframe.curve === 2) { return spriter.interpolateQuadratic(0.0, timeline_keyframe.c1, 1.0, tween); }
-            //if (timeline_keyframe.curve === 3) { return spriter.interpolateCubic(0.0, timeline_keyframe.c1, timeline_keyframe.c2, 1.0, tween); }
+            //if (timeline_keyframe.curve === 2) { return interpolateQuadratic(0.0, timeline_keyframe.c1, 1.0, tween); }
+            //if (timeline_keyframe.curve === 3) { return interpolateCubic(0.0, timeline_keyframe.c1, timeline_keyframe.c2, 1.0, tween); }
             //return 0;
 
         }
@@ -2343,7 +1766,7 @@ var add_file = function (path, scon_url, atlas_url) {
      * @extends {TimelineKeyframe}
      */
     var BoneTimelineKeyframe = TimelineKeyframe.extend({
-        /** @type {spriter.Bone} */
+        /** @type {Bone} */
         bone: null,
         /**
          * @constructor
@@ -2371,7 +1794,7 @@ var add_file = function (path, scon_url, atlas_url) {
      * @extends {TimelineKeyframe}
      */
     var ObjectTimelineKeyframe = TimelineKeyframe.extend({
-        /** @type {spriter.Object} */
+        /** @type {Object} */
         object: null,
         /**
          * @constructor
@@ -2386,9 +1809,8 @@ var add_file = function (path, scon_url, atlas_url) {
          * @return {TimelineKeyframe}
          * @param {Object.<string,?>} json
          */
-        load: function (/*data, */json) {
+        load: function (json) {
             TimelineKeyframe.prototype.load.call(this, json);
-            //this.object = new Obj().load(data, json.object || {});
             this.object = new Object().load(json.object || {});
             return this;
         }
@@ -2406,7 +1828,6 @@ var add_file = function (path, scon_url, atlas_url) {
         index: -1,
         /** @type {Array.<TimelineKeyframe>} */
         keyframe_array: null,
-
 
         ctor: function () {
             /** @type {number} */
@@ -2427,42 +1848,6 @@ var add_file = function (path, scon_url, atlas_url) {
          * @param {Object.<string,?>} json
          */
         load: function (/*data, */json) {
-            /*REMOVE
-             var i, len;
-
-             this.id = loadInt(json, 'id', -1);
-             this.name = loadString(json, 'name', '');
-             this.type = loadString(json, 'object_type', 'sprite');
-             this.index = loadInt(json, 'obj', -1);
-
-             this.keyframes = [];
-             json.key = makeArray(json.key);
-             switch (this.type) {
-             case 'sprite':
-             for (i = 0, len = json.key.length; i < len; i++) {
-             this.keyframes.push(new ObjectTimelineKeyframe().load(data, json.key[i]));
-             }
-             break;
-             case 'bone':
-             for (i = 0, len = json.key.length; i < len; i++) {
-             this.keyframes.push(new BoneTimelineKeyframe().load(json.key[i]));
-             }
-             break;
-             case 'box':
-             case 'point':
-             case 'sound':
-             case 'entity':
-             case 'variable':
-             cc.log('TODO: Timeline::load', this.type);
-             break;
-             default:
-             throw new Error(this.type);
-             }
-             this.keyframes = this.keyframes.sort(Keyframe.compare);
-
-             return this;
-             /*REMOVE END*/
-
             var timeline = this;
             timeline.id = loadInt(json, 'id', -1);
             timeline.name = loadString(json, 'name', "");
@@ -2533,61 +1918,14 @@ var add_file = function (path, scon_url, atlas_url) {
         /** @type {number} */
         max_time: 0,
 
-        ctor: function (ent) {
-
-            /*REMOVE
-             this.entity = ent;
-             this.id = -1;
-             this.name = '';
-             this.length = 0;
-             this.looping = 'true'; // 'true', 'false' or 'ping_pong'
-             this.loopTo = 0;
-             this.mainline = null;
-             this.timelines = null;
-             this.eventlines = null;
-             this.vallines = null;
-             this.minTime = 0;
-             this.maxTime = 0;
-             /*REMOVE END*/
+        ctor: function () {
         },
 
         /**
          * @return {Animation}
          * @param {Object.<string,?>} json
          */
-        load: function (/*data, */json) {
-            /*REMOVE
-             this.id = loadInt(json, 'id', -1);
-             this.name = loadString(json, 'name', '');
-             this.length = loadInt(json, 'length', 0);
-             this.looping = loadString(json, 'looping', 'true');
-             this.loopTo = loadInt(json, 'loop_to', 0);
-
-             json.mainline = json.mainline || {};
-             this.mainline = new Mainline().load(data, json.mainline);
-
-             var i, len;
-
-             this.timelines = [];
-             json.timeline = makeArray(json.timeline);
-             for (i = 0, len = json.timeline.length; i < len; i++) {
-             this.timelines.push(new Timeline().load(data, json.timeline[i]));
-             }
-
-             if (json.eventline) {
-             this.eventlines = [];
-             for (i = 0, len = json.eventline.length; i < len; i++) {
-             this.eventlines.push(new Eventline(json.eventline[i]));
-             }
-             }
-
-             this.minTime = 0;
-             this.maxTime = this.length;
-
-             return this;
-             /*REMOVE END*/
-
-
+        load: function (json) {
             var anim = this;
             anim.id = loadInt(json, 'id', -1);
             anim.name = loadString(json, 'name', "");
@@ -2619,27 +1957,12 @@ var add_file = function (path, scon_url, atlas_url) {
         /** @type {Array.<string>} */
         animation_keys: null,
 
-
-        ctor: function (data, json) {
-            /*REMOVE
-             this.id = loadInt(json, 'id', -1);
-             this.name = loadString(json, 'name', '');
-             this.anims = {};
-             this.animNames = [];
-             // Create animations
-             for (var i = 0, len = json.animation.length; i < len; i++) {
-             var animation = new Animation(this).load(data, json.animation[i]);
-             this.anims[animation.name] = animation;
-             this.animNames.push(animation.name);
-             }
-
-             /*REMOVE END*/
+        ctor: function () {
 
         },
 
-
         /**
-         * @return {spriter.Entity}
+         * @return {Entity}
          * @param {Object.<string,?>} json
          */
         load: function (json) {
@@ -2671,62 +1994,19 @@ var add_file = function (path, scon_url, atlas_url) {
         /** @type {Array.<string>} */
         entity_keys: null,
 
-
         /**
          * Data is the in memory structure that stores data of a scon file
          * @constructor
          */
-        ctor: function (scon) {
-            /*REMOVE END
-             this.scon = scon;
-             this.textures = [];
-             this.entityMap = {};
-             this.entityNames = [];
-             this.tagMap = {};
-             this.sconVersion = loadString(scon, 'scon_version', '');
-             if (this.sconVersion !== '1.0') {
-             cc.warn('This scon version is not tested!');
-             }
-             this.generator = loadString(scon, 'generator', '');
-             this.generatorVersion = loadString(scon, 'generator_version', '');
-
-             var i, len, j, jlen, folder, files, file, texture;
-             // Fetch folder and file data
-             for (i = 0, len = scon.folder.length; i < len; i++) {
-             folder = scon.folder[i];
-             files = [];
-
-             for (j = 0, jlen = folder.file.length; j < jlen; j++) {
-             file = folder.file[j];
-             texture = cc.spriteFrameCache.getSpriteFrame(file.name);
-             texture.pivot = new Vector(file.pivot_x || 0, file.pivot_y || 1);
-             //cc.log(texture.pivot);
-             files.push(texture);
-             }
-
-             this.textures.push(files);
-             }
-
-             // Construct entity data map
-             var entityDef, entity;
-             for (i = 0, len = scon.entity.length; i < len; i++) {
-             entityDef = scon.entity[i];
-             entity = new Entity(this, entityDef);
-             this.entityMap[entityDef.name] = entity;
-             this.entityNames.push(entityDef.name);
-             }
-             /*REMOVE END*/
-
-
+        ctor: function () {
             var data = this;
             data.folder_array = [];
             data.entity_map = {};
             data.entity_keys = [];
-
         },
 
         /**
-         * @return {spriter.Data}
+         * @return {Data}
          * @param {?} json
          */
         load: function (json) {
@@ -2753,7 +2033,7 @@ var add_file = function (path, scon_url, atlas_url) {
                 data.entity_keys.push(entity.name);
             });
 
-            // patch spriter.Object::pivot
+            // patch Object::pivot
 
             data.entity_keys.forEach(function (entity_key) {
                 var entity = data.entity_map[entity_key];
@@ -2793,21 +2073,14 @@ var add_file = function (path, scon_url, atlas_url) {
 
 
         /**
-         * @return {Object.<string, spriter.Entity>}
+         * @return {Object.<string, Entity>}
          */
         getEntities: function () {
             return this.entity_map;
         },
 
         /**
-         * @return {Array.<string>}
-         */
-        //getEntityKeys : function ()
-        //{
-        //    return this.entity_keys;
-        //},
-        /**
-         * @return {Object.<string, spriter.Animation>}
+         * @return {Object.<string, Animation>}
          * @param {string} entity_key
          */
         getAnims: function (entity_key) {
@@ -2829,7 +2102,6 @@ var add_file = function (path, scon_url, atlas_url) {
             return [];
         },
 
-
         getFilePivot: function (folderIdx, fileIdx) {
             return this.textures[folderIdx][fileIdx].pivot;
         },
@@ -2844,13 +2116,15 @@ var add_file = function (path, scon_url, atlas_url) {
          * @return {Entity}
          */
         getEntity: function (entityName) {
-            //cc.log('depricated')
-            return;
-            if (!this.entityMap.hasOwnProperty(entityName)) {
+            cc.log('depricated')
+            //return;
+
+
+            if (!this.entity_map.hasOwnProperty(entityName)) {
                 throw 'entity not found';
             }
 
-            return this.entityMap[entityName];
+            return this.entity_map[entityName];
         },
         /**
          * @return {Array.<string>}
@@ -2859,13 +2133,13 @@ var add_file = function (path, scon_url, atlas_url) {
             //cc.log('depricated')
             return this.entity_keys;
 
-            return this.entityNames;
+            //return this.entityNames;
         }
     });
 
     var Pose = cc.Class.extend({
 
-        /** @type {spriter.Data} */
+        /** @type {Data} */
         data: null,
         /** @type {string} */
         entity_key: '',
@@ -2877,14 +2151,14 @@ var add_file = function (path, scon_url, atlas_url) {
         elapsed_time: 0,
         /** @type {boolean} */
         dirty: true,
-        /** @type {Array.<spriter.Bone>} */
+        /** @type {Array.<Bone>} */
         bone_array: null,
-        /** @type {Array.<spriter.Object>} */
+        /** @type {Array.<Object>} */
         object_array: null,
 
         /**
          * @constructor
-         * @param {spriter.Data=} data
+         * @param {Data=} data
          */
         ctor: function (data) {
             this.data = data || null;
@@ -2914,7 +2188,7 @@ var add_file = function (path, scon_url, atlas_url) {
         },
 
         /**
-         * @return {spriter.Entity}
+         * @return {Entity}
          */
         curEntity: function () {
             var entity_map = this.data.entity_map;
@@ -2942,7 +2216,7 @@ var add_file = function (path, scon_url, atlas_url) {
         },
 
         /**
-         * @return {Object.<string, spriter.Animation>}
+         * @return {Object.<string, Animation>}
          */
         getAnims: function () {
             if (this.data) {
@@ -2962,12 +2236,12 @@ var add_file = function (path, scon_url, atlas_url) {
         },
 
         /**
-         * @return {spriter.Animation}
+         * @return {Animation}
          */
         curAnim: function () {
             var anims = this.getAnims();
-            //return anims && anims[this.anim_key];
-            return anims && anims['sigh_blinking'];//FIXME
+
+            return anims && anims[this.anim_key];
         },
 
         /**
@@ -2978,6 +2252,7 @@ var add_file = function (path, scon_url, atlas_url) {
             var data = pose.data;
             var entity = data && data.entity_map[pose.entity_key];
             var anim = entity && entity.animation_map[pose.anim_key];
+
             return (anim && anim.length) || 0;
         },
 
@@ -3067,7 +2342,7 @@ var add_file = function (path, scon_url, atlas_url) {
                     var pose_bone = pose_bone_array[bone_index] = (pose_bone_array[bone_index] || new Bone());
 
                     if (data_bone instanceof BoneRef) {
-                        // bone is a spriter.BoneRef, dereference
+                        // bone is a BoneRef, dereference
                         var timeline_index = data_bone.timeline_index;
                         var keyframe_index = data_bone.keyframe_index;
                         var timeline = timeline_array[timeline_index];
@@ -3093,8 +2368,8 @@ var add_file = function (path, scon_url, atlas_url) {
                             pose_bone.tween(bone2, tween, timeline_keyframe.spin);
                         }
                     }
-                    else if (data_bone instanceof spriter.Bone) {
-                        // bone is a spriter.Bone, copy
+                    else if (data_bone instanceof Bone) {
+                        // bone is a Bone, copy
                         pose_bone.copy(data_bone);
                     }
                     else {
@@ -3122,7 +2397,7 @@ var add_file = function (path, scon_url, atlas_url) {
                     var pose_object = pose_object_array[object_index] = (pose_object_array[object_index] || new Object());
 
                     if (data_object instanceof ObjectRef) {
-                        // object is a spriter.ObjectRef, dereference
+                        // object is a ObjectRef, dereference
                         var timeline_index = data_object.timeline_index;
                         var keyframe_index = data_object.keyframe_index;
                         var timeline = timeline_array[timeline_index];
@@ -3150,7 +2425,7 @@ var add_file = function (path, scon_url, atlas_url) {
                         }
                     }
                     else if (data_object instanceof Object) {
-                        // object is a spriter.Object, copy
+                        // object is a Object, copy
                         pose_object.copy(data_object);
                     }
                     else {
