@@ -73,12 +73,23 @@
 
               if (--loaderIndex === 0) {
 
+                add_file("res/char_animation/", "animation_list.scon");
+
+                debugger;
+
                 /*NEW*/
                 window.spriter_data = new Data().load(scon);
 
-                debugger;
+                //debugger;
                 //var spriter_pos = new Pose(new Data().load(scon));
-                //window.xxx = spriter_pos;
+                //window.xxx = window.spriter_data;
+
+
+
+
+                window.spriter_pose = new Pose(spriter_data);
+                window.spriter_pose_next = new Pose(spriter_data);
+
                 /*NEW END*/
 
 
@@ -138,37 +149,39 @@
           self.play(anim, stopAtEnd);
         }, 1);
       } else {
-        //if(this.currAnimName !== '' && this.currAnimName === anim) {
-        //    return;
-        //}
 
-        //this.stopAtEnd = !!stopAtEnd;
-        //this.isEnd = false;
-        //this.currAnimName = anim;
 
-        console.log('play');
+debugger;
 
-        //xxx.setAnim(anim);
+        loading = false;
+        var entity_keys = spriter_data.getEntityKeys();
+        var entity_key = entity_keys[entity_index = 0];
 
-        //if (this.currAnimName === '') {
-        //    throw 'currAnimName is null';
-        //}
+        spriter_pose.setEntity(entity_key);
+        spriter_pose_next.setEntity(entity_key);
+        //var entity = spriter_pose.curEntity();
+        //console.log(entity.character_map_keys);
+        //spriter_pose.character_map_key_array = entity.character_map_keys;
+        //spriter_pose.character_map_key_array = [ 'glasses', 'blue gloves', 'black gloves', 'look ma no hands' ];
+        //spriter_pose.character_map_key_array = [ 'glasses', 'blue gloves' ];
 
-        /*UNCOMMENT*/
-        //var currAnim = this.currAnim();
-        //if (this.hasAnim(currAnim)) {
-        //    this.time = currAnim.minTime;
-        //}
+        var anim_keys = spriter_data.getAnimKeys(entity_key);
 
-        this.elapsedTime = 0;
-        //this.setDirty(true);
+
+
+        var anim_key = anim_keys[anim_index = 0];
+        spriter_pose.setAnim(anim_key);
+        var anim_key_next = anim_keys[(anim_index + 1) % anim_keys.length];
+        spriter_pose_next.setAnim(anim_key_next);
+        spriter_pose.setTime(anim_time = 0);
+        spriter_pose_next.setTime(anim_time);
+        anim_length = spriter_pose.curAnimLength() || 1000;
+        anim_length_next = spriter_pose.curAnimLength() || 1000;
+
+
+
 
         this.scheduleUpdate();
-
-
-        //TEST
-        //xxx.setEntity('anim_list');
-        //TEST END
 
       }
 
@@ -179,180 +192,353 @@
      * redraw every tick
      * @param {Number} time
      */
-    update: function (time) {
+    update: function (dt) {
       var self = window.self = this;
-      time = (time * 1000) | 0;
+      dt = (dt * 1000) | 0;
+debugger;
+      if (!loading)
+      {
+        spriter_pose.update(dt * anim_rate);
+        var anim_rate_next = anim_rate * anim_length / anim_length_next;
+        spriter_pose_next.update(dt * anim_rate_next);
 
-      //var dt = time - (prev_time || time);  {
-      //    prev_time = time;
-      //} // ms
+        anim_time += dt * anim_rate;
 
-//dt *= 1000;
-      //anim_time += dt * anim_rate;
-      //anim_time *= cc.math.EPSILON//TEST
-
-
-      // Update body parts
-      //if (!this.dirty) {
-      //    return;
-      //}
-      //this.setDirty(false);
-
-
-
-
-      var dt = time - (prev_time || time); prev_time = time; // ms
-
-      return;
-
-      xxx.update(time);
-
-
-      anim_time += time * anim_rate;
-
-      var entity_keys = xxx.getEntityKeys();
-      xxx.setEntity(entity_keys[entity_index]);
-      var anim_keys = xxx.getAnimKeys();
-      xxx.setAnim(anim_keys[anim_index]);
-      anim_length = xxx.curAnimLength() || 1000;
-
-      //debug.innerHTML = "entity: " + entity_keys[entity_index] + ", anim: " + anim_keys[anim_index] + "<br>" + file.path + file.scon_url;
-
-      ///*TODO: Очистка сцены
-      /*self.container.children.forEach(function (e) {
-       e.setOpacity(0);
-       });
-       */
-
-
-      //xxx.setTime(anim_time = 0);
-      if (anim_time >= (anim_length * anim_repeat)) {
-        //xxx.setAnim(anim_keys[anim_index]);
-
-        //debugger;
-        xxx.setTime(anim_time = 0);
-        //anim_length = spriter_pose.curAnimLength() || 1000;
-        //anim_length = xxx.curAnimLength() || 1000;
-      }
-
-      xxx.strike();
-
-      if (true) {
-
-        xxx.object_array.forEach(function (object, i) {
-          var folder = xxx.data.folder_array[object.folder_index];
-          if (!folder) {
-            return;
-          }
-          var file = folder.file_array[object.file_index];
-          if (!file) {
-            return;
-          }
-          var image_key = file.name;
-
-          var image = /*images[image_key]   */cc.spriteFrameCache.getSpriteFrame(image_key);
-
-          if (image) {
-            window.images = window.images || {};
-
-            //ctxApplySpace(ctx, object.world_space);
-            //ctx.scale(file.width/2, file.height/2);
-
-            if (!images[i]) {
-              var img = new cc.Sprite();
-
-              img.setTexture(image.getTexture());
-              img.setName(image_key);
-
-              //img.x = object.world_space.position.x;
-              //img.y = object.world_space.position.y;
-              //img.rotation = cc.radiansToDegrees(-object.world_space.rotation.rad);
-
-
-              images[i] = img;
-
-              self.container.addChild(img);
-              //img.setParent(self);
-            } else {
-              //if(images[i].XXX) {
-              //    return;
-              //}
-
-
-              img = images[i];
-
-              img.setPosition(cc.p(object.world_space.position.x, object.world_space.position.y));
-              //img.setRotation(cc.radiansToDegrees(-object.world_space.rotation.rad));
-
-              //var x = Number(String(object.world_space.rotation.rad).substring(0, 10));
-
-
-              //img.setRotation(x * 180 / Math.PI);
-              //debugger;
-              //console.log(x)
-              img.setScale(object.world_space.scale.x, object.world_space.scale.y);
-              img.setOpacity(object.alpha * 255);
-
-              //console.log(img.rotation)
-              //= 0;
-
-              images[i].XXX = true;
-
-              //img.setAnchorPoint(cc.p(1 - object.pivot.x, 1 - object.pivot.y));
-
-
-              //img.setLocalZOrder(object.z_index);
+        if (anim_time >= (anim_length * anim_repeat))
+        {
+          var entity_keys = spriter_data.getEntityKeys();
+          var entity_key = entity_keys[entity_index];
+          var anim_keys = spriter_data.getAnimKeys(entity_key);
+          if (++anim_index >= anim_keys.length)
+          {
+            anim_index = 0;
+            if (++entity_index >= entity_keys.length)
+            {
+              entity_index = 0;
+              if (files.length > 1)
+              {
+                if (++file_index >= files.length)
+                {
+                  file_index = 0;
+                }
+                file = files[file_index];
+                //messages.innerHTML = "loading";
+                loading = true; loadFile(file, function ()
+              {
+                loading = false;
+                var entity_keys = spriter_data.getEntityKeys();
+                var entity_key = entity_keys[entity_index = 0];
+                spriter_pose.setEntity(entity_key);
+                spriter_pose_next.setEntity(entity_key);
+                var anim_keys = spriter_data.getAnimKeys(entity_key);
+                var anim_key = anim_keys[anim_index = 0];
+                spriter_pose.setAnim(anim_key);
+                var anim_key_next = anim_keys[(anim_index + 1) % anim_keys.length];
+                spriter_pose_next.setAnim(anim_key_next);
+                spriter_pose.setTime(anim_time = 0);
+                spriter_pose_next.setTime(anim_time);
+                anim_length = spriter_pose.curAnimLength() || 1000;
+                anim_length_next = spriter_pose.curAnimLength() || 1000;
+              });
+                return;
+              }
             }
-
+            var entity_keys = spriter_data.getEntityKeys();
+            var entity_key = entity_keys[entity_index];
+            spriter_pose.setEntity(entity_key);
+            spriter_pose_next.setEntity(entity_key);
           }
-        });
+          var entity_keys = spriter_data.getEntityKeys();
+          var entity_key = entity_keys[entity_index];
+          var anim_keys = spriter_data.getAnimKeys(entity_key);
+          var anim_key = anim_keys[anim_index];
+          spriter_pose.setAnim(anim_key);
+          var anim_key_next = anim_keys[(anim_index + 1) % anim_keys.length];
+          spriter_pose_next.setAnim(anim_key_next);
+          spriter_pose.setTime(anim_time = 0);
+          spriter_pose_next.setTime(anim_time);
+          anim_length = spriter_pose.curAnimLength() || 1000;
+          anim_length_next = spriter_pose.curAnimLength() || 1000;
+        }
+
+        var entity_keys = spriter_pose.getEntityKeys();
+        var entity_key = entity_keys[entity_index];
+        var anim_keys = spriter_pose.getAnimKeys(entity_key);
+        var anim_key = anim_keys[anim_index];
+        var anim_key_next = anim_keys[(anim_index + 1) % anim_keys.length];
+      /*  messages.innerHTML = "entity: " + entity_key + ", anim: " + anim_key + ", next anim: " + anim_key_next + "<br>" + file.path + file.spriter_url;
+        if (spriter_pose.event_array.length > 0)
+        {
+          messages.innerHTML += "<br>events: " + spriter_pose.event_array;
+        }
+        if (spriter_pose.sound_array.length > 0)
+        {
+          messages.innerHTML += "<br>sounds: " + spriter_pose.sound_array;
+        }
+        if (spriter_pose.tag_array.length > 0)
+        {
+          messages.innerHTML += "<br>tags: " + spriter_pose.tag_array;
+        }
+        var var_map_keys = Object.keys(spriter_pose.var_map);
+        if (var_map_keys.length > 0)
+        {
+          messages.innerHTML += "<br>vars: ";
+          for (var key in spriter_pose.var_map)
+          {
+            messages.innerHTML += "<br>" + key + " : " + spriter_pose.var_map[key];
+          }
+        }*/
       }
 
-      //xxx.setTime(xxx.time + elapsed);
+      //if (ctx)
+      //{
+      //  ctx.setTransform(1, 0, 0, 1, 0, 0);
+      //  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      //}
 
-      if (false) {
-        //render_ctx2d.drawDebugPose(spriter_pose, atlas_data);
-      }
+      //if (gl)
+      //{
+      //  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      //  gl.clearColor(0, 0, 0, 0);
+      //  gl.clear(gl.COLOR_BUFFER_BIT);
+      //}
 
-      /*
-       *
-       */
+      if (loading) { return; }
 
-      return;
+      spriter_pose.strike();
+      spriter_pose_next.strike();
 
+      spriter_pose.sound_array.forEach(function (sound)
+      {
+        if (!player_web.mute)
+        {
+          if (player_web.ctx)
+          {
+            var source = player_web.ctx.createBufferSource();
+            source.buffer = player_web.sounds[sound.name];
+            var gain = player_web.ctx.createGain();
+            gain.gain = sound.volume;
+            var stereo_panner = player_web.ctx.createStereoPanner();
+            stereo_panner.pan.value = sound.panning;
+            source.connect(gain);
+            gain.connect(stereo_panner);
+            stereo_panner.connect(player_web.ctx.destination);
+            source.start(0);
+          }
+          else
+          {
+            console.log("TODO: play sound", sound.name, sound.volume, sound.panning);
+          }
+        }
+      });
 
-      //var time = this.time;
-      //this.elapsedTime = 0; // reset for next update
+      var spin = 1;
 
+      // blend next pose bone into pose bone
+      spriter_pose.bone_array.forEach(function (bone, bone_index)
+      {
+        var bone_next = spriter_pose_next.bone_array[bone_index];
+        if (!bone_next) { return; }
+        spriter.Space.tween(bone.local_space, bone_next.local_space, anim_blend, spin, bone.local_space);
+      });
 
-      //TEST DEBUG
-      //sprAnim.children.forEach(function (e) {
-      //    var d = sprAnim.getChildByTag('debug');
-      //    if (d) {
-      //        d.removeFromParent();
-      //    }
-      //});
-      //TEST END
+      // blend next pose object into pose object
+      spriter_pose.object_array.forEach(function (object, object_index)
+      {
+        var object_next = spriter_pose_next.object_array[object_index];
+        if (object_next) { return; }
+        switch (object.type)
+        {
+          case 'sprite':
+            spriter.Space.tween(object.local_space, object_next.local_space, anim_blend, spin, object.local_space);
+            if (anim_blend >= 0.5)
+            {
+              object.folder_index = object_next.folder_index;
+              object.file_index = object_next.file_index;
+              object.pivot.copy(object_next.pivot);
+            }
+            object.alpha = spriter.tween(object.alpha, object_next.alpha, anim_blend);
+            break;
+          case 'bone':
+            spriter.Space.tween(object.local_space, object_next.local_space, anim_blend, spin, object.local_space);
+            break;
+          case 'box':
+            spriter.Space.tween(object.local_space, object_next.local_space, anim_blend, spin, object.local_space);
+            if (anim_blend >= 0.5)
+            {
+              object.pivot.copy(object_next.pivot);
+            }
+            break;
+          case 'point':
+            spriter.Space.tween(object.local_space, object_next.local_space, anim_blend, spin, object.local_space);
+            break;
+          case 'sound':
+            if (anim_blend >= 0.5)
+            {
+              object.name = object_next.name;
+            }
+            object.volume = spriter.tween(object.volume, object_next.volume, anim_blend);
+            object.panning = spriter.tween(object.panning, object_next.panning, anim_blend);
+            break;
+          case 'entity':
+            spriter.Space.tween(object.local_space, object_next.local_space, anim_blend, spin, object.local_space);
+            break;
+          case 'variable':
+            break;
+          default:
+            throw new Error(object.type);
+        }
+      });
 
-      /* TEST DEBUG
-       if(bone) {
-       var boneNode = new cc.DrawNode();
-       boneNode.drawCircle(cc.p(model.position.x, model.position.y),
-       15, 0, 15, true, 2, cc.color.YELLOW);
-       boneNode.setTag('debug');
-       this.addChild(boneNode);
-       } else {
-       var line = new cc.DrawNode();
-       line.drawRect(
-       cc.p(0.5, 0.5),
-       cc.p(model.position.x, model.position.y),
-       cc.color.RED,
-       1
-       );
-       line.setTag('debug');
-       this.addChild(line);
-       }
-       /* TEST END */
+      // compute bone world space
+      spriter_pose.bone_array.forEach(function (bone, bone_index)
+      {
+        var parent_bone = spriter_pose.bone_array[bone.parent_index];
+        if (parent_bone)
+        {
+          spriter.Space.combine(parent_bone.world_space, bone.local_space, bone.world_space);
+        }
+        else
+        {
+          bone.world_space.copy(bone.local_space);
+        }
+      });
+
+      // compute object world space
+      spriter_pose.object_array.forEach(function (object)
+      {
+        switch (object.type)
+        {
+          case 'sprite':
+            var bone = spriter_pose.bone_array[object.parent_index];
+            if (bone)
+            {
+              spriter.Space.combine(bone.world_space, object.local_space, object.world_space);
+            }
+            else
+            {
+              object.world_space.copy(object.local_space);
+            }
+            var folder = spriter_data.folder_array[object.folder_index];
+            var file = folder && folder.file_array[object.file_index];
+            if (file)
+            {
+              var offset_x = (0.5 - object.pivot.x) * file.width;
+              var offset_y = (0.5 - object.pivot.y) * file.height;
+              spriter.Space.translate(object.world_space, offset_x, offset_y);
+            }
+            break;
+          case 'bone':
+            var bone = spriter_pose.bone_array[object.parent_index];
+            if (bone)
+            {
+              spriter.Space.combine(bone.world_space, object.local_space, object.world_space);
+            }
+            else
+            {
+              object.world_space.copy(object.local_space);
+            }
+            break;
+          case 'box':
+            var bone = spriter_pose.bone_array[object.parent_index];
+            if (bone)
+            {
+              spriter.Space.combine(bone.world_space, object.local_space, object.world_space);
+            }
+            else
+            {
+              object.world_space.copy(object.local_space);
+            }
+            var entity = spriter_pose.curEntity();
+            var box_info = entity.obj_info_map[object.name];
+            if (box_info)
+            {
+              var offset_x = (0.5 - object.pivot.x) * box_info.w;
+              var offset_y = (0.5 - object.pivot.y) * box_info.h;
+              spriter.Space.translate(object.world_space, offset_x, offset_y);
+            }
+            break;
+          case 'point':
+            var bone = spriter_pose.bone_array[object.parent_index];
+            if (bone)
+            {
+              spriter.Space.combine(bone.world_space, object.local_space, object.world_space);
+            }
+            else
+            {
+              object.world_space.copy(object.local_space);
+            }
+            break;
+          case 'sound':
+            break;
+          case 'entity':
+            var bone = spriter_pose.bone_array[object.parent_index];
+            if (bone)
+            {
+              spriter.Space.combine(bone.world_space, object.local_space, object.world_space);
+            }
+            else
+            {
+              object.world_space.copy(object.local_space);
+            }
+            break;
+          case 'variable':
+            break;
+          default:
+            throw new Error(object.type);
+        }
+      });
+
+      //if (ctx)
+      //{
+        // origin at center, x right, y up
+        //ctx.translate(ctx.canvas.width/2, ctx.canvas.height/2); ctx.scale(1, -1);
+        //
+        //if (enable_render_ctx2d && enable_render_webgl)
+        //{
+        //  ctx.translate(-ctx.canvas.width/4, 0);
+        //}
+        //
+        //ctx.translate(-camera_x, -camera_y);
+        //ctx.scale(camera_zoom, camera_zoom);
+        //ctx.lineWidth = 1 / camera_zoom;
+        //
+        //if (enable_render_ctx2d)
+        //{
+        //  render_ctx2d.drawPose(spriter_pose, atlas_data);
+          //ctx.translate(0, -10);
+          //render_ctx2d.drawPose(spriter_pose_next, atlas_data);
+        //}
+        //
+        //if (enable_render_debug_pose)
+        //{
+        //  render_ctx2d.drawDebugPose(spriter_pose, atlas_data);
+          //ctx.translate(0, -10);
+          //render_ctx2d.drawDebugPose(spriter_pose_next, atlas_data);
+        //}
+      //}
+
+      //if (gl)
+      //{
+      //  var gl_projection = render_webgl.gl_projection;
+      //  mat3x3Identity(gl_projection);
+      //  mat3x3Ortho(gl_projection, -gl.canvas.width/2, gl.canvas.width/2, -gl.canvas.height/2, gl.canvas.height/2);
+      //
+      //  if (enable_render_ctx2d && enable_render_webgl)
+      //  {
+      //    mat3x3Translate(gl_projection, gl.canvas.width/4, 0);
+      //  }
+      //
+      //  mat3x3Translate(gl_projection, -camera_x, -camera_y);
+      //  mat3x3Scale(gl_projection, camera_zoom, camera_zoom);
+      //
+      //  if (enable_render_webgl)
+      //  {
+      //    render_webgl.drawPose(spriter_pose, atlas_data);
+          //mat3x3Translate(gl_projection, 0, -10);
+          //render_webgl.drawPose(spriter_pose_next, atlas_data);
+        //}
+      //}
 
     },
 
@@ -975,7 +1161,7 @@
      */
     load: function (json) {
 
-      Element.prototype.load.call(this, json);
+        Element.prototype.load.call(this, json);
 
       /*REMOVE*/
       //var file = this;
@@ -1021,7 +1207,7 @@
     load: function (json) {
       var file = this;
 
-      File.prototype.load.call(this, json);
+        File.prototype.load.call(this, json);
 
       //goog.base(this, 'load', json);
       file.width = loadInt(json, 'width', 0);
@@ -1047,7 +1233,7 @@
      * @param {Object.<string,?>} json
      */
     load: function (json) {
-      File.prototype.load.call(this, json);
+        File.prototype.load.call(this, json);
 
       //goog.base(this, 'load', json);
       return this;
@@ -1076,7 +1262,7 @@
     load: function (json) {
       var folder = this;
 
-      Element.prototype.load.call(this, json);
+        Element.prototype.load.call(this, json);
 
       folder.file_array = [];
       json.file = makeArray(json.file);
@@ -1229,7 +1415,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Object.prototype.load.call(this, json);
+        Object.prototype.load.call(this, json);
 
       this.parent_index = loadInt(json, 'parent', -1);
       this.folder_index = loadInt(json, 'folder', -1);
@@ -1304,7 +1490,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Object.prototype.load.call(this.json);
+        Object.prototype.load.call(this.json);
 
       //this.id = loadInt(json, 'id', -1);
       this.parent_index = loadInt(json, 'parent', -1);
@@ -1381,7 +1567,7 @@
      * @param {Object.<string,?>} json
      */
     load: function (json) {
-      Object.prototype.load.call(this, json);
+        Object.prototype.load.call(this, json);
 
       //goog.base(this, 'load', json);
       this.parent_index = loadInt(json, 'parent', -1);
@@ -1442,7 +1628,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Object.prototype.load.call(this, json);
+       Object.prototype.load.call(this, json);
 
       this.parent_index = loadInt(json, 'parent', -1);
       this.local_space.load(json);
@@ -1562,7 +1748,7 @@
     load: function (json) {
       //goog.base(this, 'load', json);
 
-      Object.prototype.load.call(this, json);
+        Object.prototype.load.call(this, json);
 
       this.parent_index = loadInt(json, 'parent', -1);
       this.local_space.load(json);
@@ -1615,7 +1801,7 @@
      * @param {Object.<string,?>} json
      */
     load: function (json) {
-      Object.prototype.load.call(this, json);
+      //Object.prototype.load.call(this, json);
       //goog.base(this, 'load', json);
       return this;
     },
@@ -1661,7 +1847,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Element.prototype.load.call(this, json);
+      //Element.prototype.load.call(this, json);
 
       this.parent_index = loadInt(json, 'parent', -1);
       this.timeline_index = loadInt(json, 'timeline', -1);
@@ -1680,7 +1866,7 @@
      * @param {Object.<string,?>} json
      */
     load: function (json) {
-      Ref.prototype.load.call(this, json);
+      //Ref.prototype.load.call(this, json);
       return this;
     }
 
@@ -1699,7 +1885,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Ref.prototype.load.call(this, json);
+      //Ref.prototype.load.call(this, json);
       this.z_index = loadInt(json, 'z_index', 0);
 
       return this;
@@ -1719,7 +1905,7 @@
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      Element.prototype.load.call(this, json);
+      //Element.prototype.load.call(this, json);
       this.time = loadInt(json, 'time', 0);
 
       return this;
@@ -1834,7 +2020,6 @@
 
     ctor: function () {
       //goog.base(this);
-      debugger;
 
       this.curve = new Curve();
     },
@@ -1922,7 +2107,6 @@
     ctor: function (type) {
       //this._super();
       //goog.base(this);
-      debugger;
       this.type = type;
       this.curve = new Curve();
     },
@@ -1966,7 +2150,6 @@
 
       //goog.base(this, 'load', json);
 
-      debugger;
       TimelineKeyframe.prototype.load.call(this, json);
       //this.constructor.prototype.load.call(this, json)
 
@@ -2354,7 +2537,6 @@
     meta: null,
 
     ctor: function () {
-debugger;
     },
 
     /**
@@ -2366,7 +2548,6 @@ debugger;
 
       //goog.base(this, 'load', json);
       Element.prototype.load.call(this, json);
-//debugger;
 
       timeline.type = loadString(json, 'object_type', "sprite");
       timeline.object_index = loadInt(json, 'obj', -1);
@@ -2376,9 +2557,7 @@ debugger;
       switch (timeline.type) {
         case 'sprite':
           json.key.forEach(function (key_json) {
-debugger;
             timeline.keyframe_array.push(new SpriteTimelineKeyframe().load(key_json));
-         debugger;
           });
           break;
         case 'bone':
@@ -2524,7 +2703,7 @@ debugger;
       var eventline = this;
 
       //goog.base(this, 'load', json);
-      Element.prototype.load.call(this, json);
+     Element.prototype.load.call(this, json);
 
       eventline.keyframe_array = [];
       json.key = makeArray(json.key);
@@ -2874,7 +3053,7 @@ debugger;
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      ObjInfo.prototype.load.call(this, json);
+       ObjInfo.prototype.load.call(this, json);
       this.w = loadInt(json, 'w', 0);
       this.h = loadInt(json, 'h', 0);
       return this;
@@ -2898,7 +3077,7 @@ debugger;
      */
     load: function (json) {
       //goog.base(this, 'load', json);
-      ObjInfo.prototype.load.call(this, json);
+       ObjInfo.prototype.load.call(this, json);
       this.w = loadFloat(json, 'w', 0.0);
       this.h = loadFloat(json, 'h', 0.0);
       return this;
@@ -2942,7 +3121,7 @@ debugger;
       var anim = this;
 
       //goog.base(this, 'load', json);
-      Element.prototype.load.call(this, json);
+       Element.prototype.load.call(this, json);
 
 
       anim.length = loadInt(json, 'length', 0);
@@ -3010,7 +3189,7 @@ debugger;
       var entity = this;
 
       //goog.base(this, 'load', json);
-      Element.prototype.load.call(this, json);
+       Element.prototype.load.call(this, json);
 
 
       entity.character_map_map = {};
