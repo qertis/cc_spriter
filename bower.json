@@ -1,6 +1,6 @@
 {
   "name": "cc_spriter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/qertis/cc_spriter",
   "authors": [
     "Denis Baskovsky <denis@baskovsky.ru>"
@@ -21,6 +21,8 @@
     "tests"
   ],
   "dependencies": {
-    "cocos2d-html5": "*"
+    "cocos2d-html5": "*",
+    "spriter.js": "https://github.com/flyover/spriter.js.git",
+    "google-closure-library": "*"
   }
 }
