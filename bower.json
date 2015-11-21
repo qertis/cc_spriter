@@ -6,7 +6,7 @@
     "Denis Baskovsky <denis@baskovsky.ru>"
   ],
   "description": "",
-  "main": "",
+  "main": "dist/cc_spriter.js",
   "moduleType": [],
   "keywords": [
     "spriter",

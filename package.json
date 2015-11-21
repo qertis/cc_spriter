@@ -1,0 +1,29 @@
+{
+  "name": "cc_spriter",
+  "version": "1.0.1",
+  "description": "spriter animation for cocos2d-js",
+  "main": "cc_spriter.js",
+  "dependencies": {
+    "babel-core": "^6.2.1",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "webpack": "^1.12.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qertis/cc_spriter.git"
+  },
+  "keywords": [
+    "spriter"
+  ],
+  "author": "Denis Baskovsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qertis/cc_spriter/issues"
+  },
+  "homepage": "https://github.com/qertis/cc_spriter#readme"
+}
