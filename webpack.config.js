@@ -5,7 +5,7 @@ module.exports = {
     entry: [
         './cc_spriter.js'
     ],
-    devtool : 'source-map',
+    //devtool : 'source-map',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'cc_spriter.js'

@@ -16,17 +16,19 @@ bower i
 ----------
 
 ```sh
-├- bower_components/
-├──── cocos2d-html5/
-├──── google-closure-library/
-├──── spriter.js/
+├─ bin/
+├─ bower_components/
+├─── cocos2d-html5/
+├─── google-closure-library/
+├─── spriter.js/
 ├─ demo/
-├──── .cocos-project.json
-├──── res
-├──── index.html
-├──── main.js
-├──── project.json
-└─ spriter.js
+├─ dist/
+├─── .cocos-project.json
+├─── res
+├─── index.html
+├─── main.js
+├─── project.json
+└─ cc_spriter.js
 ```
 
 ### Usage:
@@ -42,9 +44,8 @@ Include scripts
 var spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
 spriter.setAnim(animationName);
-spriter.unscheduleUpdate(); //pause
-spriter.scheduleUpdate();   //resume
-
+spriter.unscheduleUpdate(); // pause
+spriter.scheduleUpdate();   // resume
 ```
 
 ### Deploy:

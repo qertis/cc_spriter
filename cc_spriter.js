@@ -144,9 +144,11 @@ cc.Spriter = cc.Sprite.extend({
     update: function (dt) {
         dt = 1000 / 60; // time step in milliseconds
         this.removeAllChildrenWithCleanup(true);
-        this.pose.update(dt); // accumulate time
-        this.pose.strike(); // process time slice
-        this.pose.object_array.forEach(object => {
+
+        let pose = this.pose;
+        pose.update(dt); // accumulate time
+        pose.strike(); // process time slice
+        pose.object_array.forEach(object => {
             switch (object.type) {
                 case 'sprite':
                     let folder = this.pose.data.folder_array[object.folder_index];
@@ -175,6 +177,131 @@ cc.Spriter = cc.Sprite.extend({
                     break;
                 case 'entity':
                     cc.log('TODO ');
+                    break;
+            }
+        });
+
+
+
+
+
+
+
+        /*DEBUG*/
+
+        pose.bone_array.forEach(function (bone)
+        {
+            //ctx.save();
+            //ctxApplySpace(ctx, bone.world_space);
+            //ctxDrawPoint(ctx);
+            var entity = pose.data.entity_map[pose.entity_key];
+            var bone_info = entity.obj_info_map[bone.name];
+            if (bone_info) {
+                debugger;
+                //ctx.beginPath();
+                //ctx.moveTo(0, 0);
+                //ctx.lineTo(bone_info.h/2, -bone_info.h/2);
+                //ctx.lineTo(bone_info.w, 0);
+                //ctx.lineTo(bone_info.h/2, bone_info.h/2);
+                //ctx.closePath();
+                //ctx.strokeStyle = 'cyan';
+                //ctx.stroke();
+
+                //var line = new cc.DrawNode();
+                //line.drawSegment(cc.p(50,50), cc.p(200,200),2);
+                //this.addChild(line);
+
+            }
+            //ctx.restore();
+        });
+
+        pose.object_array.forEach((object) => {
+            switch (object.type)
+            {
+                case 'sprite':
+                    var folder = pose.data.folder_array[object.folder_index];
+                    if (!folder) { return; }
+                    var file = folder.file_array[object.file_index];
+                    if (!file) { return; }
+                    //var site = atlas_data && atlas_data.sites[file.name];
+                    //var page = site && atlas_data.pages[site.page];
+                    var image_key = file.name;
+                    //var image = images[image_key];
+                    //ctx.save();
+                    //ctxApplySpace(ctx, object.world_space);
+                    //ctx.scale(file.width/2, file.height/2);
+                    let lineWidth = 1 / Math.min(file.width/2, file.height/2);
+                    //ctxApplyAtlasSitePosition(ctx, site);
+                    //ctxDrawMesh(ctx, triangles, positions);
+
+                    var line = new cc.DrawNode();
+                    line.drawSegment(
+                        cc.p(object.world_space.position),
+                        cc.p(object.local_space.position),
+                        lineWidth);
+                    this.addChild(line);
+
+                    //ctx.restore();
+                    break;
+                case 'bone':
+                    //ctx.save();
+                    //ctxApplySpace(ctx, object.world_space);
+                    var entity = pose.data.entity_map[pose.entity_key];
+                    var bone_info = entity.obj_info_map[object.name];
+                    if (bone_info)
+                    {
+                        //ctx.beginPath();
+                        //ctx.moveTo(0, 0);
+                        //ctx.lineTo(bone_info.h/2, -bone_info.h/2);
+                        //ctx.lineTo(bone_info.w, 0);
+                        //ctx.lineTo(bone_info.h/2, bone_info.h/2);
+                        //ctx.closePath();
+                        //ctx.strokeStyle = 'cyan';
+                        //ctx.stroke();
+
+                        debugger;
+                        //var line = new cc.DrawNode();
+                        //line.drawSegment(cc.p(50,50), cc.p(200,200),2);
+                        //this.addChild(line);
+
+
+                    }
+                    //ctx.restore();
+                    break;
+                case 'box':
+                    debugger;
+                    //var entity = pose.data.entity_map[pose.entity_key];
+                    //var box_info = entity.obj_info_map[object.name];
+                    //if (box_info)
+                    //{
+                    //    ctx.save();
+                    //    ctxApplySpace(ctx, object.world_space);
+                    //    ctx.beginPath();
+                    //    ctx.rect(-box_info.w/2, -box_info.h/2, box_info.w, box_info.h);
+                    //    ctx.strokeStyle = 'magenta';
+                    //    ctx.stroke();
+                    //    ctx.restore();
+                    //}
+                    break;
+                case 'point':
+                    debugger;
+                    //ctx.save();
+                    //ctxApplySpace(ctx, object.world_space);
+                    //ctxDrawPoint(ctx);
+                    //ctx.restore();
+                    break;
+                case 'sound':
+                    debugger;
+                    break;
+                case 'entity':
+                    debugger;
+                    //ctx.save();
+                    //ctxApplySpace(ctx, object.world_space);
+                    //ctxDrawPoint(ctx);
+                    //render.drawDebugPose(object.pose, atlas_data); // recursive
+                    //ctx.restore();
+                    break;
+                case 'variable':
                     break;
             }
         });
