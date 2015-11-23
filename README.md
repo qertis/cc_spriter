@@ -25,7 +25,9 @@ bower i
 ----------
 
 ```sh
-├- bower_components/
+├─ dist/
+├──── cc_spriter_min.js
+├─ bower_components/
 ├──── cocos2d-html5/
 ├──── google-closure-library/
 ├──── spriter.js/
@@ -35,30 +37,20 @@ bower i
 ├──── index.html
 ├──── main.js
 ├──── project.json
-└─ spriter.js
+└─ cc_spriter.js
 ```
 
 ### Usage:
 ----------
 
 Include scripts
-```html
-<script src="../bower_components/google-closure-library/closure/goog/base.js"></script>
-<script src="../bower_components/spriter.js/spriter.js"></script>
-```
-
 ```js
 var spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
 spriter.setAnim(animationName);
 spriter.unscheduleUpdate(); //pause
 spriter.scheduleUpdate();   //resume
-
 ```
-
-### Deploy:
-----------
-webpack
 
 ### DEMO:
 ----------

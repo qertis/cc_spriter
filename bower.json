@@ -5,8 +5,8 @@
   "authors": [
     "Denis Baskovsky <denis@baskovsky.ru>"
   ],
-  "description": "",
-  "main": "dist/cc_spriter.js",
+  "description": "Spriter implementation for cocos2d-js",
+  "main": "dist/cc_spriter_min.js",
   "moduleType": [],
   "install" : {
     "path" : "lib"
