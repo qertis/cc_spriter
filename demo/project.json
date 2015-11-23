@@ -11,6 +11,6 @@
     "cocos2d"
   ],
   "jsList": [
-    "../dist/cc_spriter.js"
+    "../dist/cc_spriter_min.js"
   ]
 }

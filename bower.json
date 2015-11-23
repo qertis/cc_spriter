@@ -8,6 +8,9 @@
   "description": "",
   "main": "dist/cc_spriter.js",
   "moduleType": [],
+  "install" : {
+    "path" : "lib"
+  },
   "keywords": [
     "spriter",
     "cocos2d animation"
@@ -22,7 +25,7 @@
   ],
   "dependencies": {
     "cocos2d-html5": "*",
-    "spriter.js": "https://github.com/flyover/spriter.js.git",
+    "spriterjs": "https://github.com/flyover/spriter.js.git",
     "google-closure-library": "*"
   }
 }

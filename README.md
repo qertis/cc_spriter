@@ -5,6 +5,15 @@ Cocos2d-HTML5 Spriter scml (scon) Implementation
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
 </a>
 
+### Dependencies for development
+----------
+```sh
+node >= 4.0
+Closure Compiler with compiler.jar
+send compiler.jar to bower_components/google-closure-library/ 
+./bin/compile.sh
+```
+
 ### Setup
 ----------
 ```sh
