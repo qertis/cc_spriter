@@ -11,9 +11,12 @@ Used [spriter.js](https://github.com/flyover/spriter.js)
 ----------
 node >= 4.0
 [Google Closure Compiler](https://developers.google.com/closure/compiler/)
-[compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip)
-send compiler.jar to bower_components/google-closure-library/ 
+[compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) send compiler.jar to bower_components/google-closure-library/ 
+
+Compile source code:
+```sh
 ./bin/compile.sh
+```
 
 ### Setup
 ----------
@@ -45,7 +48,14 @@ bower i
 ### Usage:
 ----------
 
-Include scripts
+Include cc_spriter_min.js in project.json
+```json
+"jsList": [
+  "cc_spriter_min.js"
+]
+```  
+
+Call cc.Spriter
 ```js
 var spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
@@ -54,9 +64,12 @@ spriter.unscheduleUpdate(); //pause
 spriter.scheduleUpdate();   //resume
 ```
 
+See example in demo directory
+
 ### Features:
 WebGL
 Not global (goog and spriter stored in closure)
+~63kB size
 
 ### DEMO:
 ----------
