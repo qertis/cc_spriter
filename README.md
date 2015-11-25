@@ -1,18 +1,19 @@
 # cc_spriter
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
+Used [spriter.js](https://github.com/flyover/spriter.js)
+
 <a href="http://www.brashmonkey.com/">
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
 </a>
 
 ### Dependencies for development
 ----------
-```sh
 node >= 4.0
-Closure Compiler with compiler.jar
+[Google Closure Compiler](https://developers.google.com/closure/compiler/)
+[compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip)
 send compiler.jar to bower_components/google-closure-library/ 
 ./bin/compile.sh
-```
 
 ### Setup
 ----------
@@ -30,7 +31,8 @@ bower i
 ├─ bower_components/
 ├──── cocos2d-html5/
 ├──── google-closure-library/
-├──── spriter.js/
+├────── compiler.jar
+├──── spriterjs/
 ├─ demo/
 ├──── .cocos-project.json
 ├──── res
@@ -51,6 +53,10 @@ spriter.setAnim(animationName);
 spriter.unscheduleUpdate(); //pause
 spriter.scheduleUpdate();   //resume
 ```
+
+### Features:
+WebGL
+Not global (goog and spriter stored in closure)
 
 ### DEMO:
 ----------

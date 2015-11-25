@@ -32,12 +32,11 @@ cat closure_compiled.js \
     > ../temp/temp_cc_spriter_min.js
 
 # Closure wrap
-# FIXME (Unexpected token ;)
-#((tac < temp_cc_spriter_min.js; echo -n '!function(){')|tac; echo -n '}();') > cc_spriter_min.js
+sed -i "1i!function(){" temp_cc_spriter_min.js;
+echo "}();" >> temp_cc_spriter_min.js;
 
 # Move minified file
-#mv cc_spriter_min.js ../../dist/cc_spriter_min.js
-mv temp_cc_spriter_min.js ../../dist/cc_spriter_min.js
+mv temp_cc_spriter_min.js ../../dist/cc_spriter_min.js;
 
 # Remove old files
 sleep 1
@@ -45,3 +44,5 @@ cd ../../
 rm -rf bower_components/temp
 
 echo 'end'
+
+exit;

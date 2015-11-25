@@ -183,4 +183,4 @@
 
     }
   });
-}(window, window.cc, window.spriter);
+}(window, window.cc, spriter);
