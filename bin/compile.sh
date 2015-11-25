@@ -3,13 +3,13 @@
 
 rm -rf bower_components/temp
 
-# Create dist directory
+# Create dist and temp directories
 mkdir -p dist
 
-# Compile source
-webpack --production
+# Build minification
+webpack -p
 
-cd bower_components
+cd bower_components/
 
 mkdir -p temp
 
@@ -24,14 +24,24 @@ google-closure-library/closure/bin/build/closurebuilder.py \
   --output_mode=compiled \
   --compiler_jar=google-closure-library/compiler.jar > temp/closure_compiled.js
 
-cd temp
+cd temp/
 
 # Concat files
 cat closure_compiled.js \
     cc_spriter_component.js \
-    > ../../dist/cc_spriter_min.js
+    > ../temp/temp_cc_spriter_min.js
+
+# Closure wrap
+# FIXME (Unexpected token ;)
+#((tac < temp_cc_spriter_min.js; echo -n '!function(){')|tac; echo -n '}();') > cc_spriter_min.js
+
+# Move minified file
+#mv cc_spriter_min.js ../../dist/cc_spriter_min.js
+mv temp_cc_spriter_min.js ../../dist/cc_spriter_min.js
 
 # Remove old files
-cd ../..
-sleep 5
-rm -rf bower_components/temp/
+sleep 1
+cd ../../
+rm -rf bower_components/temp
+
+echo 'end'
