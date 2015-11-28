@@ -1,6 +1,6 @@
 /**
  * Spriter plugin for Cocos2d HTML5
- * @version 1.0.0
+ * @version 1.0.1
  * @author Denis Baskovsky (denis@baskovsky.ru)
  *
  * Based on Spriter.js by:
@@ -24,6 +24,8 @@
 
     data: null,
     pose: null,
+
+    spriteMap: new WeakMap(),
 
     /**
      * Spriter constructor
@@ -138,16 +140,21 @@
 
     },
 
+
     /**
      * Update every tick
      * @param dt
      */
     update: function (dt) {
       dt = 1000 / 60; // time step in milliseconds
-      this.removeAllChildrenWithCleanup(true);
       let pose = this.pose;
       pose.update(dt); // accumulate time
       pose.strike(); // process time slice
+
+      this.children.forEach(child => {
+        child.opacity = 0;
+      });
+
       pose.object_array.forEach(object => {
         switch (object.type) {
           case 'sprite':
@@ -159,21 +166,33 @@
             if (!file) {
               return;
             }
+
             let image_key = file.name;
-
             let spriteFrame = cc.spriteFrameCache.getSpriteFrame(image_key);
-            if (spriteFrame) {
-              let sprite = new cc.Sprite();
-              sprite.setSpriteFrame(spriteFrame);
-              sprite.setOpacity(object.alpha * 255);
-              sprite.setPositionX(object.world_space.position.x);
-              sprite.setPositionY(object.world_space.position.y);
-              sprite.setScaleX(object.world_space.scale.x);
-              sprite.setScaleY(object.world_space.scale.y);
-              sprite.setRotation(-object.world_space.rotation.deg);
-
-              this.addChild(sprite);
+            if (!spriteFrame) {
+              return;
             }
+
+            let sprite;
+            let worldSpace = object.world_space;
+            let spriteCache = this.spriteMap.get(object);
+
+            if (!spriteCache) {
+              sprite = new cc.Sprite();
+              this.spriteMap.set(object, sprite);
+              this.addChild(sprite);
+            } else {
+              sprite = spriteCache;
+            }
+
+            sprite.setSpriteFrame(spriteFrame);
+            sprite.setOpacity(object.alpha * 255);
+            sprite.setPositionX(worldSpace.position.x);
+            sprite.setPositionY(worldSpace.position.y);
+            sprite.setScaleX(worldSpace.scale.x);
+            sprite.setScaleY(worldSpace.scale.y);
+            sprite.setRotation(-worldSpace.rotation.deg);
+
             break;
           case 'entity':
             cc.log('TODO ');

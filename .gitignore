@@ -1,10 +1,10 @@
-/bower_components
 # IntelliJ project files
 .idea
 *.iml
 out
 gen
-/cocos2d-html5
+
 /temp
 /node_modules
+/bower_components
 /demo/publish/

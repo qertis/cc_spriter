@@ -1,4 +1,5 @@
 # cc_spriter
+----------
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
 Used [spriter.js](https://github.com/flyover/spriter.js)
@@ -14,7 +15,6 @@ node >= 4.0
 [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 
 [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) send compiler.jar to bower_components/google-closure-library/ 
-
 
 #### Compile source code:
 ```sh
@@ -67,8 +67,6 @@ spriter.unscheduleUpdate(); //pause
 spriter.scheduleUpdate();   //resume
 ```
 
-See example in demo directory
-
 ### Features:
 * WebGL
 * Not global (goog and spriter stored in closure)
@@ -76,4 +74,6 @@ See example in demo directory
 
 ### DEMO:
 ----------
+See example latest version in a demo directory
+
 http://goo.gl/z98WXo
