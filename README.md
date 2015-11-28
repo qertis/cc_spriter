@@ -10,10 +10,13 @@ Used [spriter.js](https://github.com/flyover/spriter.js)
 ### Dependencies for development
 ----------
 node >= 4.0
+
 [Google Closure Compiler](https://developers.google.com/closure/compiler/)
+
 [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) send compiler.jar to bower_components/google-closure-library/ 
 
-Compile source code:
+
+#### Compile source code:
 ```sh
 ./bin/compile.sh
 ```
@@ -48,7 +51,7 @@ bower i
 ### Usage:
 ----------
 
-Include cc_spriter_min.js in project.json
+Include cc_spriter_min.js in cocos2d project.json
 ```json
 "jsList": [
   "cc_spriter_min.js"
@@ -67,9 +70,9 @@ spriter.scheduleUpdate();   //resume
 See example in demo directory
 
 ### Features:
-WebGL
-Not global (goog and spriter stored in closure)
-~63kB size
+* WebGL
+* Not global (goog and spriter stored in closure)
+* ~63kB size
 
 ### DEMO:
 ----------
