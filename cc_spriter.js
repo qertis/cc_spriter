@@ -23,14 +23,14 @@
     pose: null,
 
     spriteMap: new WeakMap(),
-    /* time step in milliseconds */
+    /* delta time in milliseconds */
     timeStep: 0.0,
 
     /**
      * Spriter constructor
      * @param {String} sconLink scon file to use for this animation
      */
-    ctor (sconLink) {
+      ctor (sconLink) {
       this._super();
 
       this.timeStep = cc.director.getAnimationInterval() * 1000;
@@ -43,7 +43,7 @@
         this._ready = true;
         this.setEntity(this._entity);
         this.setAnim(this._animation);
-        this.scheduleUpdate();
+        this.scheduleUpdateWithPriority(-3);
       });
     },
 
@@ -51,7 +51,7 @@
      * Set entity
      * @param entity
      */
-    setEntity (entity) {
+      setEntity (entity) {
       this._entity = entity;
 
       if (this._ready) {
@@ -63,7 +63,7 @@
      * Set animation
      * @param animation
      */
-    setAnim (animation) {
+      setAnim (animation) {
       this._animation = animation;
 
       if (this._ready) {
@@ -75,12 +75,12 @@
      * Prealod scon resource
      * @param {function} callback
      */
-    preload (callback) {
+      preload (callback) {
       let sconLink = this.sconLink;
 
       if (this._ready) {
         return callback({
-          error: 'уже установлено'
+          error: 'is ready'
         });
       }
 
@@ -111,16 +111,12 @@
                     return callback({error});
                   }
 
-                  let texture = new cc.Texture2D();
-                  texture.initWithElement(img);
-
-                  let spriteFrame = new cc.SpriteFrame();
-                  spriteFrame.setTexture(texture);
-
                   let rect = cc.rect(0, 0, file.width, file.height);
-                  spriteFrame.setRect(rect);
+                  let sprite = new cc.Sprite(img, rect);
 
-                  cc.spriteFrameCache.addSpriteFrame(spriteFrame, image_key);
+                  if (!cc.spriteFrameCache.getSpriteFrame(image_key)) {
+                    cc.spriteFrameCache.addSpriteFrame(sprite.getSpriteFrame(), image_key);
+                  }
 
                   if (--loaderIndex === 0) {
                     return callback({error: false});
@@ -145,14 +141,10 @@
      * Update every tick
      * @param dt
      */
-    update (dt) {
+      update (dt) {
       let pose = this.pose;
       pose.update(this.timeStep); // accumulate time
       pose.strike(); // process time slice
-
-      this.children.forEach(child => {
-        child.opacity = 0;
-      });
 
       pose.object_array.forEach(object => {
         switch (object.type) {
@@ -177,8 +169,8 @@
             let spriteCache = this.spriteMap.get(object);
 
             if (!spriteCache) {
-              sprite = new cc.Sprite();
-              sprite.setSpriteFrame(spriteFrame);
+              sprite = new cc.Sprite(spriteFrame);
+              sprite.setName(image_key);
               this.spriteMap.set(object, sprite);
               this.addChild(sprite);
             } else {
@@ -192,6 +184,7 @@
             sprite.scaleX = worldSpace.scale.x;
             sprite.scaleY = worldSpace.scale.y;
             sprite.rotation = -worldSpace.rotation.deg;
+            sprite.setDirty(true);
 
             break;
           case 'entity':
@@ -200,6 +193,13 @@
         }
       });
 
+      this.children.forEach(child => {
+        if (!child.dirty) {
+          child.opacity = 0;
+        } else {
+          child.setDirty(false);
+        }
+      });
     }
   });
 }(window, window.cc, spriter);
