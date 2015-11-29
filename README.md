@@ -68,9 +68,9 @@ spriter.scheduleUpdate();   //resume
 ```
 
 ### Features:
-* WebGL
-* Not global (goog and spriter stored in closure)
-* ~63kB size
+* Canvas 2D and WebGL supports
+* No global dependencies
+* ~62kB size
 
 ### DEMO:
 ----------
