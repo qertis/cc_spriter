@@ -25,7 +25,7 @@ node >= 4.0
 ----------
 ```sh
 npm install
-bower i
+bower install
 ```
 
 ### Structure

@@ -1,21 +1,18 @@
 /**
- * Spriter plugin for Cocos2d HTML5
- * @version 1.0.1
+ * Spriter plugin for Cocos2d-JS
+ * @version 1.0.2
  * @author Denis Baskovsky (denis@baskovsky.ru)
  *
  * Based on Spriter.js by:
- * - Sean Bohan pixelpicosean@gmail.com
- * - Jason Andersen jgandersen@gmail.com
- * - Isaac Burns isaacburns@gmail.com
+ * - Isaac Burns <isaacburns@gmail.com>
  */
 !function (window, cc, spriter) {
   'use strict';
-
   cc.Spriter = cc.Sprite.extend({
     /* Loading indicator */
     _ready: false,
 
-    /* Resources path */
+    /* Resources paths */
     sconLink: '',
     sconPath: '',
 
@@ -26,6 +23,8 @@
     pose: null,
 
     spriteMap: new WeakMap(),
+    /* time step in milliseconds */
+    timeStep: 0.0,
 
     /**
      * Spriter constructor
@@ -33,6 +32,8 @@
      */
     ctor (sconLink) {
       this._super();
+
+      this.timeStep = cc.director.getAnimationInterval() * 1000;
 
       this.sconLink = sconLink;
       this.preload(data => {
@@ -131,7 +132,7 @@
                 break;
 
               default:
-                cc.log("TODO: load", file.type, file.name);
+                cc.log('TODO: load', file.type, file.name);
                 break;
             }
           });
@@ -140,15 +141,13 @@
 
     },
 
-
     /**
      * Update every tick
      * @param dt
      */
     update (dt) {
-      dt = 1000 / 60; // time step in milliseconds
       let pose = this.pose;
-      pose.update(dt); // accumulate time
+      pose.update(this.timeStep); // accumulate time
       pose.strike(); // process time slice
 
       this.children.forEach(child => {
@@ -179,19 +178,20 @@
 
             if (!spriteCache) {
               sprite = new cc.Sprite();
+              sprite.setSpriteFrame(spriteFrame);
               this.spriteMap.set(object, sprite);
               this.addChild(sprite);
             } else {
               sprite = spriteCache;
+              sprite.texture = spriteFrame.getTexture();
             }
 
-            sprite.setSpriteFrame(spriteFrame);
-            sprite.setOpacity(object.alpha * 255);
-            sprite.setPositionX(worldSpace.position.x);
-            sprite.setPositionY(worldSpace.position.y);
-            sprite.setScaleX(worldSpace.scale.x);
-            sprite.setScaleY(worldSpace.scale.y);
-            sprite.setRotation(-worldSpace.rotation.deg);
+            sprite.opacity = object.alpha * 255;
+            sprite.x = worldSpace.position.x;
+            sprite.y = worldSpace.position.y;
+            sprite.scaleX = worldSpace.scale.x;
+            sprite.scaleY = worldSpace.scale.y;
+            sprite.rotation = -worldSpace.rotation.deg;
 
             break;
           case 'entity':
