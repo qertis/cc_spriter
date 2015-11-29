@@ -31,7 +31,7 @@
      * Spriter constructor
      * @param {String} sconLink scon file to use for this animation
      */
-    ctor: function (sconLink) {
+    ctor (sconLink) {
       this._super();
 
       this.sconLink = sconLink;
@@ -50,7 +50,7 @@
      * Set entity
      * @param entity
      */
-    setEntity: function (entity) {
+    setEntity (entity) {
       this._entity = entity;
 
       if (this._ready) {
@@ -62,7 +62,7 @@
      * Set animation
      * @param animation
      */
-    setAnim: function (animation) {
+    setAnim (animation) {
       this._animation = animation;
 
       if (this._ready) {
@@ -74,7 +74,7 @@
      * Prealod scon resource
      * @param {function} callback
      */
-    preload: function (callback) {
+    preload (callback) {
       let sconLink = this.sconLink;
 
       if (this._ready) {
@@ -145,7 +145,7 @@
      * Update every tick
      * @param dt
      */
-    update: function (dt) {
+    update (dt) {
       dt = 1000 / 60; // time step in milliseconds
       let pose = this.pose;
       pose.update(dt); // accumulate time
