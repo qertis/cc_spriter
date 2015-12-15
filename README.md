@@ -2,7 +2,7 @@
 ----------
 Cocos2d-HTML5 Spriter scml (scon) Implementation 
 
-Used [spriter.js](https://github.com/flyover/spriter.js)
+Based on [spriter.js](https://github.com/flyover/spriter.js)
 
 <a href="http://www.brashmonkey.com/">
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
@@ -14,7 +14,7 @@ node >= 4.0
 
 [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 
-[compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) send compiler.jar to bower_components/google-closure-library/ 
+[compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) send compiler.jar to directory bower_components/google-closure-library/ 
 
 #### Compile source code:
 ```sh
@@ -28,7 +28,7 @@ npm install
 bower install
 ```
 
-### Structure
+### Project structure
 ----------
 
 ```sh
@@ -58,7 +58,7 @@ Include cc_spriter_min.js in cocos2d project.json
 ]
 ```  
 
-Call cc.Spriter
+### Example. Create cc.Spriter instance
 ```js
 var spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
@@ -74,6 +74,4 @@ spriter.scheduleUpdate();   //resume
 
 ### DEMO:
 ----------
-See example latest version in a demo directory
-
 http://goo.gl/z98WXo
