@@ -1,6 +1,6 @@
 /**
  * Spriter plugin for Cocos2d-JS
- * @version 1.0.2
+ * @version 1.1.0
  * @author Denis Baskovsky (denis@baskovsky.ru)
  *
  * Based on Spriter.js by:
@@ -8,13 +8,12 @@
  */
 !function (window, cc, spriter) {
   'use strict';
-  cc.Spriter = cc.Sprite.extend({
-    /* Loading indicator */
-    _ready: false,
 
-    /* Resources paths */
-    sconLink: '',
-    sconPath: '',
+  cc.Spriter = cc.Sprite.extend({
+    _ready: false, // Loading indicator
+
+    sconLink: '', // Resource scon link
+    sconPath: '', // Resource scon path
 
     _entity: null,
     _animation: null,
@@ -22,15 +21,13 @@
     data: null,
     pose: null,
 
-    spriteMap: new WeakMap(),
-    /* delta time in milliseconds */
-    timeStep: 0.0,
+    timeStep: 0.0,// delta time in milliseconds
 
     /**
-     * Spriter constructor
+     * @constructor
      * @param {String} sconLink scon file to use for this animation
      */
-      ctor (sconLink) {
+    ctor (sconLink) {
       this._super();
 
       this.timeStep = cc.director.getAnimationInterval() * 1000;
@@ -43,15 +40,15 @@
         this._ready = true;
         this.setEntity(this._entity);
         this.setAnim(this._animation);
-        this.scheduleUpdateWithPriority(-3);
+        this.scheduleUpdateWithPriority(0);
       });
     },
 
     /**
      * Set entity
-     * @param entity
+     * @param {String} entity
      */
-      setEntity (entity) {
+    setEntity (entity) {
       this._entity = entity;
 
       if (this._ready) {
@@ -61,9 +58,9 @@
 
     /**
      * Set animation
-     * @param animation
+     * @param {String} animation
      */
-      setAnim (animation) {
+    setAnim (animation) {
       this._animation = animation;
 
       if (this._ready) {
@@ -75,7 +72,7 @@
      * Prealod scon resource
      * @param {function} callback
      */
-      preload (callback) {
+    preload (callback) {
       let sconLink = this.sconLink;
 
       if (this._ready) {
@@ -124,9 +121,6 @@
                 });
                 break;
 
-              case 'sound':
-                break;
-
               default:
                 cc.log('TODO: load', file.type, file.name);
                 break;
@@ -139,14 +133,20 @@
 
     /**
      * Update every tick
-     * @param dt
      */
-      update (dt) {
+    update () {
+      this.removeAllChildren();
+
       let pose = this.pose;
+
       pose.update(this.timeStep); // accumulate time
       pose.strike(); // process time slice
 
-      pose.object_array.forEach(object => {
+      // TODO: Add
+      // pose.bone_array
+      // pose.event_array
+      // pose.tag_array
+      pose.object_array.forEach((object, i) => {
         switch (object.type) {
           case 'sprite':
             let folder = pose.data.folder_array[object.folder_index];
@@ -158,48 +158,32 @@
               return;
             }
 
-            let image_key = file.name;
-            let spriteFrame = cc.spriteFrameCache.getSpriteFrame(image_key);
+            let imageKey = file.name;
+            let spriteFrame = cc.spriteFrameCache.getSpriteFrame(imageKey);
             if (!spriteFrame) {
               return;
             }
 
-            let sprite;
             let worldSpace = object.world_space;
-            let spriteCache = this.spriteMap.get(object);
 
-            if (!spriteCache) {
-              sprite = new cc.Sprite(spriteFrame);
-              sprite.setName(image_key);
-              this.spriteMap.set(object, sprite);
-              this.addChild(sprite);
-            } else {
-              sprite = spriteCache;
-              sprite.texture = spriteFrame.getTexture();
-            }
-
+            let sprite = new cc.Sprite(spriteFrame);
+            this.addChild(sprite);
+            sprite.setName(imageKey);
             sprite.opacity = object.alpha * 255;
             sprite.x = worldSpace.position.x;
             sprite.y = worldSpace.position.y;
             sprite.scaleX = worldSpace.scale.x;
             sprite.scaleY = worldSpace.scale.y;
             sprite.rotation = -worldSpace.rotation.deg;
-            sprite.setDirty(true);
 
             break;
-          case 'entity':
-            cc.log('TODO ');
+
+          default:
             break;
         }
       });
 
-      this.children.forEach(child => {
-        if (!child.dirty) {
-          child.opacity = 0;
-        } else {
-          child.setDirty(false);
-        }
-      });
     }
   });
+
 }(window, window.cc, spriter);
