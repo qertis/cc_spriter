@@ -8,13 +8,6 @@ cc.game.onStart = function () {
   }, this);
 
   var TestScene = cc.Scene.extend({
-    onEnter: function () {
-      this._super();
-      this.addChild(new SpriterLayer());
-    }
-  });
-
-  var SpriterLayer = cc.Layer.extend({
     ctor: function () {
       this._super();
 
@@ -26,11 +19,10 @@ cc.game.onStart = function () {
         x: cc.winSize.width / 2,
         y: cc.winSize.height / 4
       });
-
       this.addChild(spriter);
+
     }
   });
-
 };
 cc.game.run();
 

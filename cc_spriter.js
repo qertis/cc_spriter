@@ -1,6 +1,6 @@
 /**
- * Spriter plugin for Cocos2d-JS
- * @version 1.1.0
+ * Spriter plugin for Cocos2D-JS
+ * @version 1.1.1
  * @author Denis Baskovsky (denis@baskovsky.ru)
  *
  * Based on Spriter.js by:
@@ -8,6 +8,9 @@
  */
 !function (window, cc, spriter) {
   'use strict';
+
+
+  const xxx = [];
 
   cc.Spriter = cc.Sprite.extend({
     _ready: false, // Loading indicator
@@ -38,6 +41,7 @@
           throw data.error;
         }
         this._ready = true;
+        this.removeAllChildren();
         this.setEntity(this._entity);
         this.setAnim(this._animation);
         this.scheduleUpdateWithPriority(0);
@@ -90,7 +94,7 @@
         let loaderIndex = 0;
 
         let data = this.data = new spriter.Data().load(scon); // create and load Spriter data from SCON file
-        let pose = this.pose = new spriter.Pose(data); // create Spriter pose and attach data
+        this.pose = new spriter.Pose(data); // create Spriter pose and attach data
 
         /* Getting file count */
         scon.folder.forEach(folder => folder.file.forEach(() => ++loaderIndex));
@@ -100,6 +104,7 @@
 
             switch (file.type) {
               case 'image':
+              {
                 let image_key = file.name;
                 let fileUrl = sconPath + file.name;
 
@@ -119,11 +124,19 @@
                     return callback({error: false});
                   }
                 });
+
                 break;
+              }
 
               default:
-                cc.log('TODO: load', file.type, file.name);
+              {
+                // TODO: Add
+                // pose.bone_array
+                // pose.event_array
+                // pose.tag_array
+                cc.warn('not load', file.type, file.name);
                 break;
+              }
             }
           });
         });
@@ -131,57 +144,125 @@
 
     },
 
+
+    _getObjectArraySprites() {
+
+      return this.pose.object_array.map(object => {
+        if (object.type === 'sprite') {
+          const folder = this.pose.data.folder_array[object.folder_index];
+          if (!folder) {
+            return;
+          }
+          const file = folder.file_array[object.file_index];
+          if (!file) {
+            return;
+          }
+
+          const imageKey = file.name;
+          const spriteFrame = cc.spriteFrameCache.getSpriteFrame(imageKey);
+          if (!spriteFrame) {
+            return;
+          }
+
+          return {
+            file,
+            imageKey,
+            folder,
+            object,
+            spriteFrame
+          };
+        }
+      });
+
+    },
+
+    _initSpriteFrames() {
+
+      const pose = this.pose;
+
+      this._getObjectArraySprites().forEach((e, i) => {
+        let worldSpace = e.object.world_space;
+
+        let sprite = new cc.Sprite(e.spriteFrame);
+
+        this._updateSprite(sprite, worldSpace, e, i);
+        xxx.push(sprite);
+        this.addChild(sprite);
+
+      });
+
+    },
+
+    _updateSprite(sprite, worldSpace, e, i) {
+      sprite.setName(e.imageKey);
+      sprite.opacity = e.object.alpha * 255;
+      sprite.x = worldSpace.position.x;
+      sprite.y = worldSpace.position.y;
+      sprite.scaleX = worldSpace.scale.x;
+      sprite.scaleY = worldSpace.scale.y;
+      sprite.rotation = -worldSpace.rotation.deg;
+
+
+      sprite.myFile = e.file;
+      sprite.myFolder = e.folder;
+      sprite.myIndex = i;
+    },
+
+    // TODO: too many forEach! Их сейчас 4! (forEach, forEach, forEach и find)
+    // Возможно в цикл с opacity = 0 нужно внедрить логику this._getObjectArraySprites()
+    // У xxx иногда может быть больше length и поэтому логику нужно ставить туда
+    _updateSpriteFrames() {
+
+      xxx.forEach(x => {
+        x.opacity = 0;
+      });
+
+      this._getObjectArraySprites().forEach((e, index) => {
+        let worldSpace = e.object.world_space;
+
+        // Find like object
+        let sprite = xxx.find(a => {
+          return (
+            Object.is(e.file, a.myFile) &&
+            Object.is(e.folder, a.myFolder) &&
+            Object.is(a.myIndex, index)
+          );
+        });
+
+        /**
+         * Если спрайт найден - просто обновляем
+         * Иначе создаем новый спрайт и добавляем его
+         */
+        if (sprite) {
+          this._updateSprite(sprite, worldSpace, e, index);
+        } else {
+          console.log('not found')
+          sprite = new cc.Sprite(e.spriteFrame);
+          this._updateSprite(sprite, worldSpace, e, index);
+
+          xxx.push(sprite);
+          this.addChild(sprite);
+        }
+
+        sprite.zIndex = index;
+
+      });
+    },
+
     /**
      * Update every tick
      */
     update () {
-      this.removeAllChildren();
-
       let pose = this.pose;
 
       pose.update(this.timeStep); // accumulate time
       pose.strike(); // process time slice
 
-      // TODO: Add
-      // pose.bone_array
-      // pose.event_array
-      // pose.tag_array
-      pose.object_array.forEach((object, i) => {
-        switch (object.type) {
-          case 'sprite':
-            let folder = pose.data.folder_array[object.folder_index];
-            if (!folder) {
-              return;
-            }
-            let file = folder.file_array[object.file_index];
-            if (!file) {
-              return;
-            }
-
-            let imageKey = file.name;
-            let spriteFrame = cc.spriteFrameCache.getSpriteFrame(imageKey);
-            if (!spriteFrame) {
-              return;
-            }
-
-            let worldSpace = object.world_space;
-
-            let sprite = new cc.Sprite(spriteFrame);
-            this.addChild(sprite);
-            sprite.setName(imageKey);
-            sprite.opacity = object.alpha * 255;
-            sprite.x = worldSpace.position.x;
-            sprite.y = worldSpace.position.y;
-            sprite.scaleX = worldSpace.scale.x;
-            sprite.scaleY = worldSpace.scale.y;
-            sprite.rotation = -worldSpace.rotation.deg;
-
-            break;
-
-          default:
-            break;
-        }
-      });
+      if (xxx.length) {
+        this._updateSpriteFrames();
+      } else {
+        this._initSpriteFrames();
+      }
 
     }
   });

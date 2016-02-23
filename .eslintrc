@@ -2,7 +2,7 @@
   "rules": {
     "indent": [
       2,
-      4,
+      2,
       {
         "SwitchCase": 1
       }
@@ -25,7 +25,8 @@
     "browser": true
   },
   "globals": {
-    "cc": true
+    "cc": true,
+    "spriter": true
   },
   "extends": "eslint:recommended"
 }
