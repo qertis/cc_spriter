@@ -1,6 +1,6 @@
 {
   "name": "cc_spriter",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "description": "spriter animation for cocos2d-js",
   "main": "cc_spriter.js",
   "dependencies": {
@@ -12,6 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "start": "bash bin/compile.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

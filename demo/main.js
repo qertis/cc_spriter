@@ -3,11 +3,11 @@ cc.game.onStart = function () {
   cc.view.resizeWithBrowserSize(true);
   //load resources
   cc.LoaderScene.preload([], function () {
-    var testScene = new TestScene();
-    cc.director.runScene(testScene);
+    var animationScene = new AnimationScene();
+    cc.director.runScene(animationScene);
   }, this);
 
-  var TestScene = cc.Scene.extend({
+  var AnimationScene = cc.Scene.extend({
     ctor: function () {
       this._super();
 

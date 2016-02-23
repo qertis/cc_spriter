@@ -9,22 +9,16 @@
 !function (window, cc, spriter) {
   'use strict';
 
-
-  const xxx = [];
+  const sprites = [];
+  let pose = {};
+  let timeStep = 0.0;// delta time in milliseconds
+  let _sconLink = ''; // Resource scon link
+  let _sconPath = ''; // Resource scon path
 
   cc.Spriter = cc.Sprite.extend({
     _ready: false, // Loading indicator
-
-    sconLink: '', // Resource scon link
-    sconPath: '', // Resource scon path
-
     _entity: null,
     _animation: null,
-
-    data: null,
-    pose: null,
-
-    timeStep: 0.0,// delta time in milliseconds
 
     /**
      * @constructor
@@ -33,9 +27,10 @@
     ctor (sconLink) {
       this._super();
 
-      this.timeStep = cc.director.getAnimationInterval() * 1000;
+      timeStep = cc.director.getAnimationInterval() * 1000;
+      _sconLink = sconLink;
+      _sconPath = sconLink.replace(/\w+.scon$/, '');
 
-      this.sconLink = sconLink;
       this.preload(data => {
         if (data.error) {
           throw data.error;
@@ -56,7 +51,7 @@
       this._entity = entity;
 
       if (this._ready) {
-        this.pose.setEntity(entity);
+        pose.setEntity(entity);
       }
     },
 
@@ -68,7 +63,7 @@
       this._animation = animation;
 
       if (this._ready) {
-        this.pose.setAnim(animation);
+        pose.setAnim(animation);
       }
     },
 
@@ -77,24 +72,21 @@
      * @param {function} callback
      */
     preload (callback) {
-      let sconLink = this.sconLink;
-
       if (this._ready) {
         return callback({
           error: 'is ready'
         });
       }
 
-      cc.loader.loadJson(sconLink, (error, scon) => {
+      cc.loader.loadJson(_sconLink, (error, scon) => {
         if (error) {
           return callback({error});
         }
 
-        let sconPath = scon.sconPath = sconLink.replace(/\w+.scon$/, '');
         let loaderIndex = 0;
 
-        let data = this.data = new spriter.Data().load(scon); // create and load Spriter data from SCON file
-        this.pose = new spriter.Pose(data); // create Spriter pose and attach data
+        const data = new spriter.Data().load(scon); // create and load Spriter data from SCON file
+        pose = new spriter.Pose(data); // create Spriter pose and attach data
 
         /* Getting file count */
         scon.folder.forEach(folder => folder.file.forEach(() => ++loaderIndex));
@@ -106,7 +98,7 @@
               case 'image':
               {
                 let image_key = file.name;
-                let fileUrl = sconPath + file.name;
+                let fileUrl = _sconPath + file.name;
 
                 cc.loader.loadImg(fileUrl, (error, img) => {
                   if (error) {
@@ -144,12 +136,16 @@
 
     },
 
-
+    /**
+     *
+     * @returns {Array}
+     * @private
+     */
     _getObjectArraySprites() {
 
-      return this.pose.object_array.map(object => {
+      return pose.object_array.map(object => {
         if (object.type === 'sprite') {
-          const folder = this.pose.data.folder_array[object.folder_index];
+          const folder = pose.data.folder_array[object.folder_index];
           if (!folder) {
             return;
           }
@@ -176,9 +172,11 @@
 
     },
 
+    /**
+     *
+     * @private
+     */
     _initSpriteFrames() {
-
-      const pose = this.pose;
 
       this._getObjectArraySprites().forEach((e, i) => {
         let worldSpace = e.object.world_space;
@@ -186,13 +184,21 @@
         let sprite = new cc.Sprite(e.spriteFrame);
 
         this._updateSprite(sprite, worldSpace, e, i);
-        xxx.push(sprite);
+        sprites.push(sprite);
         this.addChild(sprite);
 
       });
 
     },
 
+    /**
+     * Обновить спрайт
+     * @param sprite
+     * @param worldSpace
+     * @param e
+     * @param i
+     * @private
+     */
     _updateSprite(sprite, worldSpace, e, i) {
       sprite.setName(e.imageKey);
       sprite.opacity = e.object.alpha * 255;
@@ -201,7 +207,6 @@
       sprite.scaleX = worldSpace.scale.x;
       sprite.scaleY = worldSpace.scale.y;
       sprite.rotation = -worldSpace.rotation.deg;
-
 
       sprite.myFile = e.file;
       sprite.myFolder = e.folder;
@@ -213,15 +218,17 @@
     // У xxx иногда может быть больше length и поэтому логику нужно ставить туда
     _updateSpriteFrames() {
 
-      xxx.forEach(x => {
-        x.opacity = 0;
+      const objectArraySprites = this._getObjectArraySprites();
+
+      sprites.forEach((sprite) => {
+        sprite.opacity = 0;
       });
 
-      this._getObjectArraySprites().forEach((e, index) => {
+      objectArraySprites.forEach((e, index) => {
         let worldSpace = e.object.world_space;
 
         // Find like object
-        let sprite = xxx.find(a => {
+        let sprite = sprites.find(a => {
           return (
             Object.is(e.file, a.myFile) &&
             Object.is(e.folder, a.myFolder) &&
@@ -236,29 +243,26 @@
         if (sprite) {
           this._updateSprite(sprite, worldSpace, e, index);
         } else {
-          console.log('not found')
           sprite = new cc.Sprite(e.spriteFrame);
           this._updateSprite(sprite, worldSpace, e, index);
 
-          xxx.push(sprite);
+          sprites.push(sprite);
           this.addChild(sprite);
         }
 
         sprite.zIndex = index;
-
       });
+
     },
 
     /**
      * Update every tick
      */
     update () {
-      let pose = this.pose;
-
-      pose.update(this.timeStep); // accumulate time
+      pose.update(timeStep); // accumulate time
       pose.strike(); // process time slice
 
-      if (xxx.length) {
+      if (sprites.length) {
         this._updateSpriteFrames();
       } else {
         this._initSpriteFrames();

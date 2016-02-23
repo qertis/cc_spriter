@@ -3,6 +3,7 @@
 *.iml
 out
 gen
+*.log
 
 /temp
 /node_modules
