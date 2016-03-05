@@ -5,7 +5,6 @@ module.exports = {
   entry: [
     './cc_spriter.js'
   ],
-  //devtool : 'source-map',
   output: {
     path: path.join(__dirname, 'bower_components/temp/'),
     filename: 'cc_spriter_component.js'
