@@ -4,13 +4,5 @@
   "showFPS" : true,
   "frameRate" : 60,
   "id" : "gameCanvas",
-  "renderMode" : 0,
-  "loadExtension" : true,
-  "engineDir" : "../bower_components/cocos2d-html5",
-  "modules" : [
-    "cocos2d"
-  ],
-  "jsList": [
-    "../dist/cc_spriter_min.js"
-  ]
+  "renderMode" : 0
 }

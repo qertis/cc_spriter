@@ -1,7 +1,7 @@
 cc.game.onStart = function () {
   cc.view.setDesignResolutionSize(480, 320, cc.ResolutionPolicy.SHOW_ALL);
   cc.view.resizeWithBrowserSize(true);
-  //load resources
+
   cc.LoaderScene.preload([], function () {
     var animationScene = new AnimationScene();
     cc.director.runScene(animationScene);
@@ -20,7 +20,6 @@ cc.game.onStart = function () {
         y: cc.winSize.height / 4
       });
       this.addChild(spriter);
-
     }
   });
 };
