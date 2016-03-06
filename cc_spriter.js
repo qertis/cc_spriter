@@ -18,7 +18,7 @@
     _entity: null,
     _animation: null,
 
-    timeStep : 0.0,// delta time in milliseconds
+    timeStep: 0.0,// delta time in milliseconds
 
     /**
      * @constructor
@@ -32,12 +32,13 @@
 
       _sconPath = this._getSconPath(sconLink);
 
-      this.preload(data => {
+      this._preload(data => {
         if (data.error) {
           throw data.error;
         }
 
         this._ready = true;
+        this._initSpriteFrames();
         this.removeAllChildren();
         this.setEntity(this._entity);
         this.setAnim(this._animation);
@@ -50,16 +51,11 @@
      * @public
      */
     update() {
-      pose.update(this.timeStep); // accumulate time
+      pose.update(this.timeStep);
       pose.strike(); // process time slice
 
-      if (sprites.length) {
-        const objectArraySprites = this._getObjectArraySprites();
-        this._hideAllSprites();
-        this._updateSpriteFrames(objectArraySprites);
-      } else {
-        this._initSpriteFrames();
-      }
+      this._hideAllSprites();
+      this._updateSpriteFrames(this._getObjectArraySprites());
     },
 
     /**
@@ -92,9 +88,9 @@
      * Prealod scon resource
      * @param {function} callback
      * @return {function}
-     * @public
+     * @private
      */
-    preload(callback) {
+    _preload(callback) {
       if (this._ready) {
         return callback({
           error: 'is ready'
@@ -179,19 +175,9 @@
       return pose.object_array.map(object => {
         if (object.type === 'sprite') {
           const folder = pose.data.folder_array[object.folder_index];
-          if (!folder) {
-            return;
-          }
           const file = folder.file_array[object.file_index];
-          if (!file) {
-            return;
-          }
-
           const imageKey = file.name;
           const spriteFrame = cc.spriteFrameCache.getSpriteFrame(imageKey);
-          if (!spriteFrame) {
-            return;
-          }
 
           return {
             file,
@@ -247,13 +233,13 @@
     /**
      * Find Sprite by object
      * @param e {Object}
-     * @returns {cc.Sprite | null}
+     * @returns {cc.Sprite | undefined}
      * @private
      */
     _findSpriteByObject(e) {
-      let sprite = null;
+      let sprite;
 
-      for (let i = 0; i < sprites.length; i++) {
+      for (let i = 0, len = sprites.length; i < len; i++) {
         sprite = sprites[i];
 
         if (Object.is(e.file, sprite.myFile) &&
@@ -280,11 +266,15 @@
      * @private
      */
     _updateSpriteFrames(objectArraySprites) {
+      let e;
+      let worldSpace;
+      let sprite;
+
       for (let index = 0, len = objectArraySprites.length; index < len; index++) {
-        const e = objectArraySprites[index];
+        e = objectArraySprites[index];
         e.myIndex = index;
-        const worldSpace = e.object.world_space;
-        let sprite = this._findSpriteByObject(e);
+        worldSpace = e.object.world_space;
+        sprite = this._findSpriteByObject(e);
 
         // If sprite not found - creating a new sprite
         if (!sprite) {
