@@ -67,7 +67,3 @@ Features
 * Canvas 2D and WebGL supports
 * No global dependencies
 * ~62kB size
-
-DEMO:
-----------
-http://goo.gl/z98WXo
