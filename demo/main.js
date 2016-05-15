@@ -12,6 +12,7 @@ cc.game.onStart = function () {
       this._super();
 
       var spriter = new cc.Spriter('res/char_animation/animation_list.scon');
+      spriter.setLoop(true);
       spriter.setEntity('anim_list');
       spriter.setAnim('good_job');
       spriter.attr({
