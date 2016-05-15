@@ -18,11 +18,10 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "*",
+    "!dist/",
+    "!dist/*",
+    "LICENSE"
   ],
   "dependencies": {
     "spriterjs": "https://github.com/flyover/spriter.js.git",
