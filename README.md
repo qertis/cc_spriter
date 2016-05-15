@@ -14,20 +14,6 @@ Install from Bower:
 bower install cc_spriter
 ```
 
-Dependencies for development:
------------------------------
-* node >= 4.0
-* [Google Closure Compiler](https://developers.google.com/closure/compiler/)
-* [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) 
-send compiler.jar to directory ```bower_components/google-closure-library/```
-
-Setup:
-------
-```sh
-npm install
-bower install
-```
-
 Usage:
 ------
 Include cc_spriter_min.js in cocos2d project.json
@@ -55,6 +41,20 @@ spriter.resume();
 
 Development:
 ===
+
+Need dependencies:
+-----------------------------
+* node >= 4.0
+* [Google Closure Compiler](https://developers.google.com/closure/compiler/)
+* [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) 
+send compiler.jar to directory ```bower_components/google-closure-library/```
+
+Setup:
+------
+```sh
+npm install
+bower install
+```
 
 Compile source code with Closure:
 ---------------------------------
