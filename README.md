@@ -1,5 +1,5 @@
-# Cocos2d-HTML5 Spriter scml (scon) Implementation 
-> Based on [spriter.js](https://github.com/flyover/spriter.js)
+# Cocos2d 3.x Spriter
+> Based on [spriter.js](https://github.com/flyover/spriter.js) scon implementation 
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4023ff166364425d805232ac1518e4d9)](https://www.codacy.com/app/qertis/cc_spriter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=qertis/cc_spriter&amp;utm_campaign=Badge_Grade)
 [![Dependency Status](https://david-dm.org/qertis/cc_spriter.svg)](https://david-dm.org/qertis/cc_spriter)
