@@ -13,7 +13,8 @@
   },
   "keywords": [
     "spriter",
-    "cocos2d skelet animation"
+    "cocos2d",
+    "skelet animation"
   ],
   "license": "MIT",
   "ignore": [

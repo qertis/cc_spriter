@@ -1,7 +1,7 @@
 {
   "name": "cc_spriter",
   "version": "1.1.4",
-  "description": "spriter animation for cocos2d-js",
+  "description": "Spriter animation for Cocos2d-HTML5",
   "main": "cc_spriter.js",
   "dependencies": {
     "babel-core": "^6.2.1",
@@ -20,7 +20,9 @@
     "url": "git+https://github.com/qertis/cc_spriter.git"
   },
   "keywords": [
-    "spriter"
+    "spriter",
+    "cocos2d",
+    "skelet animation"
   ],
   "author": "Denis Baskovsky",
   "license": "MIT",
