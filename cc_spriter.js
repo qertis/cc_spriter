@@ -13,9 +13,11 @@
   let _sconPath = ''; // Resource scon path
 
   cc.Spriter = cc.Sprite.extend({
+
     _ready: false, // Loading indicator
     _entity: null,
     _animation: null,
+    _loop: true,
 
     timeStep: 0.0,// delta time in milliseconds
     sprites: [],
@@ -59,6 +61,50 @@
       this._hideAllSprites();
       this._updateSpriteFrames(this._getObjectArraySprites());
 
+      if (!this._loop) {
+        this.compareFinishAnimation();
+      }
+
+    },
+
+    /**
+     *
+     */
+    compareFinishAnimation() {
+      const newTime = pose.getTime();
+
+      if (newTime > this._currentAnimationTime) {
+        this._currentAnimationTime = newTime;
+      } else {
+        this.stopAnimation();
+      }
+
+    },
+
+    /**
+     *
+     */
+    stopAnimation() {
+      pose.setTime(0);
+      this._animationFinish = true;
+      this.pause();
+    },
+
+    /**
+     *
+     * @param value {Boolean}
+     */
+    setLoop(value) {
+      this._animationFinish = false;
+
+      if (value) {
+        this._loop = true;
+      } else {
+        this._loop = false;
+        this._currentAnimationTime = 0.0;
+      }
+
+      this.resume();
     },
 
     /**
@@ -124,8 +170,7 @@
           folder.file_array.forEach(file => {
 
             switch (file.type) {
-              case 'image':
-              {
+              case 'image': {
                 const image_key = file.name;
                 const fileUrl = _sconPath + file.name;
 
@@ -149,8 +194,7 @@
                 break;
               }
 
-              default:
-              {
+              default: {
                 // TODO: Add
                 // pose.bone_array
                 // pose.event_array
