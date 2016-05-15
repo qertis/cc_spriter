@@ -5,7 +5,7 @@ out
 gen
 *.log
 
-/temp
-/node_modules
-/bower_components
+/temp/
+/node_modules/
+/bower_components/
 /demo/publish/
