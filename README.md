@@ -8,6 +8,12 @@
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
 </a>
 
+Install from Bower:
+-------------------
+```sh
+bower install cc_spriter
+```
+
 Dependencies for development:
 -----------------------------
 * node >= 4.0
@@ -20,31 +26,6 @@ Setup:
 ```sh
 npm install
 bower install
-```
-
-Compile source code with Closure:
----------------------------------
-```sh
-./bin/compile.sh
-```
-
-Project structure:
-------------------
-```sh
-├─ dist/
-├──── cc_spriter_min.js
-├─ bower_components/
-├──── cocos2d-html5/
-├──── google-closure-library/
-├────── compiler.jar
-├──── spriterjs/
-├─ demo/
-├──── .cocos-project.json
-├──── res
-├──── index.html
-├──── main.js
-├──── project.json
-└─ cc_spriter.js
 ```
 
 Usage:
@@ -70,6 +51,34 @@ API:
 spriter.setLoop(false);
 spriter.pause();
 spriter.resume();
+```
+
+Development:
+===
+
+Compile source code with Closure:
+---------------------------------
+```sh
+./bin/compile.sh
+```
+
+Project structure:
+------------------
+```sh
+├─ dist/
+├──── cc_spriter_min.js
+├─ bower_components/
+├──── cocos2d-html5/
+├──── google-closure-library/
+├────── compiler.jar
+├──── spriterjs/
+├─ demo/
+├──── .cocos-project.json
+├──── res
+├──── index.html
+├──── main.js
+├──── project.json
+└─ cc_spriter.js
 ```
 
 Features:
