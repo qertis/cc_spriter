@@ -1,0 +1,13 @@
+language: node_js
+
+node_js:
+  - 4.0
+  
+before_script:
+  - npm install
+  - bower install
+ 
+script: ./node_modules/webpack/bin/webpack.js -p
+
+# use Closure  
+#script: ./bin/compile.sh
