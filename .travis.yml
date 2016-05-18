@@ -5,7 +5,7 @@ node_js:
   
 before_script:
   - npm install
-  - bower install
+  -  ./node_modules/bower/bin/bower install
  
 script: ./node_modules/webpack/bin/webpack.js -p
 
