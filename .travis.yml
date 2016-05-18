@@ -1,11 +1,13 @@
 language: node_js
 
 node_js:
-  - 4.0
+  - 5.5
   
 before_script:
   - npm install
-  -  ./node_modules/bower/bin/bower install
+  - npm install -g bower
+  - npm install -g webpack
+  - bower install
  
 script: ./node_modules/webpack/bin/webpack.js -p
 
