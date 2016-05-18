@@ -3,6 +3,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4023ff166364425d805232ac1518e4d9)](https://www.codacy.com/app/qertis/cc_spriter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=qertis/cc_spriter&amp;utm_campaign=Badge_Grade)
 [![Dependency Status](https://david-dm.org/qertis/cc_spriter.svg)](https://david-dm.org/qertis/cc_spriter)
+[![Build Status](https://travis-ci.org/qertis/cc_spriter.svg?branch=master)](https://travis-ci.org/qertis/cc_spriter)
 
 <a href="http://www.brashmonkey.com/">
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">

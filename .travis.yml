@@ -9,5 +9,5 @@ before_script:
  
 script: ./node_modules/webpack/bin/webpack.js -p
 
-# use Closure  
+# TODO: Use Closure compile (with upload needed jar)
 #script: ./bin/compile.sh
