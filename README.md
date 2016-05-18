@@ -8,7 +8,41 @@
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
 </a>
 
-Dependencies for development:
+Install from Bower:
+-------------------
+```sh
+bower install cc_spriter
+```
+
+Usage:
+------
+Include cc_spriter_min.js in cocos2d project.json
+```json
+"jsList": [
+  "cc_spriter_min.js"
+]
+```  
+
+Example:
+--------
+```js
+var spriter = new cc.Spriter(pathToScon);
+spriter.setEntity(entityName);
+spriter.setAnim(animationName);
+```
+
+API:
+----
+```js
+spriter.setLoop(false);
+spriter.pause();
+spriter.resume();
+```
+
+Development:
+===
+
+Need dependencies:
 -----------------------------
 * node >= 4.0
 * [Google Closure Compiler](https://developers.google.com/closure/compiler/)
@@ -45,31 +79,6 @@ Project structure:
 ├──── main.js
 ├──── project.json
 └─ cc_spriter.js
-```
-
-Usage:
-------
-Include cc_spriter_min.js in cocos2d project.json
-```json
-"jsList": [
-  "cc_spriter_min.js"
-]
-```  
-
-Example:
---------
-```js
-var spriter = new cc.Spriter(pathToScon);
-spriter.setEntity(entityName);
-spriter.setAnim(animationName);
-```
-
-API:
-----
-```js
-spriter.setLoop(false);
-spriter.pause();
-spriter.resume();
 ```
 
 Features:
