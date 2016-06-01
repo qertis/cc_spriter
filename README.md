@@ -87,3 +87,8 @@ Features:
 * Canvas 2D and WebGL supports
 * No global dependencies
 * ~62kB size
+
+
+Forum:
+------
+https://brashmonkey.com/forum/index.php?/topic/4474-using-spriter-animations-in-cocos2d-js/
