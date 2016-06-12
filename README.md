@@ -1,9 +1,9 @@
-# Cocos2d 3.x Spriter
-> Based on [spriter.js](https://github.com/flyover/spriter.js) scon implementation 
+# Spriter Cocos2d 3.x 
+> Based on [spriter.js](https://github.com/flyover/spriter.js) SCON Implementation 
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4023ff166364425d805232ac1518e4d9)](https://www.codacy.com/app/qertis/cc_spriter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=qertis/cc_spriter&amp;utm_campaign=Badge_Grade)
 [![Dependency Status](https://david-dm.org/tewst/cc_spriter.svg)](https://david-dm.org/tewst/cc_spriter)
-[![Build Status](https://travis-ci.org/qertis/cc_spriter.svg?branch=master)](https://travis-ci.org/qertis/cc_spriter)
+[![Build Status](https://travis-ci.org/tewst/cc_spriter.svg?branch=master)](https://travis-ci.org/tewst/cc_spriter)
 [Discuss](https://brashmonkey.com/forum/index.php?/topic/4474-using-spriter-animations-in-cocos2d-js/)
 
 <a href="http://www.brashmonkey.com/">
@@ -18,7 +18,7 @@ bower install cc_spriter
 
 Usage:
 ------
-Include cc_spriter_min.js in cocos2d project.json
+Include cc_spriter_min.js in project.json
 ```json
 "jsList": [
   "cc_spriter_min.js"
