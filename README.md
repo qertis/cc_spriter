@@ -11,13 +11,13 @@
 </a>
 
 Install from Bower:
--------------------
+---
 ```sh
 bower install cc_spriter
 ```
 
 Usage:
-------
+---
 Include cc_spriter_min.js in project.json
 ```json
 "jsList": [
@@ -26,7 +26,7 @@ Include cc_spriter_min.js in project.json
 ```  
 
 Example:
---------
+---
 ```js
 var spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
@@ -34,9 +34,9 @@ spriter.setAnim(animationName);
 ```
 
 API:
-----
+---
 ```js
-spriter.setLoop(false);
+spriter.setLoop(Boolean);
 spriter.pause();
 spriter.resume();
 ```
@@ -45,32 +45,33 @@ Development:
 ===
 
 Need dependencies:
------------------------------
-* node >= 4.0
+---
+* node >= 6.0
+* Bash Shell
 * [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 * [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) 
-send compiler.jar to directory ```bower_components/google-closure-library/```
+* * send compiler.jar to directory ```bower_components/google-closure-library/```
+* * rename closure_compiler file to compiler.jar
 
 Setup:
-------
+---
 ```sh
-npm install
-bower install
+npm i
+bower i
 ```
 
-Compile source code with Closure:
----------------------------------
+Compile source code with Google Closure:
+---
 ```sh
-./bin/compile.sh
+npm run start
 ```
 
 Project structure:
-------------------
-```sh
+---
+```
 ├─ dist/
 ├──── cc_spriter_min.js
 ├─ bower_components/
-├──── cocos2d-html5/
 ├──── google-closure-library/
 ├────── compiler.jar
 ├──── spriterjs/
@@ -84,7 +85,11 @@ Project structure:
 ```
 
 Features:
----------
+---
 * Canvas 2D and WebGL supports
 * No global dependencies
 * ~62kB size
+
+License
+---
+cc_spriter is MIT licensed.

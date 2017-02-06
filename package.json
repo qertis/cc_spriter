@@ -1,33 +1,32 @@
 {
   "name": "cc_spriter",
-  "version": "1.1.4",
-  "description": "Spriter animation for Cocos2d-HTML5",
+  "version": "1.1.5",
+  "description": "Cocos2d Spriter",
   "main": "cc_spriter.js",
   "dependencies": {
-    "babel-core": "^6.2.1",
-    "babel-loader": "^6.2.0",
-    "babel-preset-es2015": "^6.1.18",
-    "bower-installer": "^1.2.0",
-    "webpack": "^1.12.8"
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.9.0",
+    "webpack": "^1.13.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "bash bin/compile.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "./node_modules/webpack/bin/webpack.js -p"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qertis/cc_spriter.git"
+    "url": "git+https://github.com/tewst/cc_spriter.git"
   },
   "keywords": [
     "spriter",
     "cocos2d",
     "skelet animation"
   ],
-  "author": "Denis Baskovsky",
+  "author": "goto Interactive Software",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/qertis/cc_spriter/issues"
+    "url": "https://github.com/tewst/cc_spriter/issues"
   },
-  "homepage": "https://github.com/qertis/cc_spriter#readme"
+  "homepage": "https://github.com/tewst/cc_spriter#readme"
 }

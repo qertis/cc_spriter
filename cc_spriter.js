@@ -1,20 +1,18 @@
 /**
- * Spriter plugin for Cocos2D-JS
- * @version 1.1.4
- * @author Denis Baskovsky (denis@baskovsky.ru)
+ * @name Cocos2d Spriter
+ * @version 1.1.5
+ * @author goto Interactive Software
  *
- * Based on Spriter.js by:
- * - Isaac Burns <isaacburns@gmail.com>
+ * Based on Spriter.js by Isaac Burns <isaacburns@gmail.com>
  */
 !function (window, cc, spriter) {
   'use strict';
 
   let pose = {};
-  let _sconPath = ''; // Resource scon path
+  let _sconPath = '';// Resource scon path
 
   cc.Spriter = cc.Sprite.extend({
-
-    _ready: false, // Loading indicator
+    _ready: false,// Loading indicator
     _entity: null,
     _animation: null,
     _loop: true,
@@ -27,11 +25,9 @@
      * @param {String} sconLink scon file to use for this animation
      */
     ctor(sconLink) {
-
       this._super();
       this.timeStep = cc.director.getAnimationInterval() * 1000;
       this._sconLink = sconLink;
-
       _sconPath = this._getSconPath(sconLink);
 
       this._preload(data => {
@@ -46,7 +42,6 @@
         this.setAnim(this._animation);
         this.scheduleUpdateWithPriority(0);
       });
-
     },
 
     /**
@@ -54,21 +49,18 @@
      * @public
      */
     update() {
-
       pose.update(this.timeStep);
-      pose.strike(); // process time slice
-
+      pose.strike();// process time slice
       this._hideAllSprites();
       this._updateSpriteFrames(this._getObjectArraySprites());
 
       if (!this._loop) {
         this.compareFinishAnimation();
       }
-
     },
 
     /**
-     *
+     * Compare finish animation
      */
     compareFinishAnimation() {
       const newTime = pose.getTime();
@@ -78,11 +70,10 @@
       } else {
         this.stopAnimation();
       }
-
     },
 
     /**
-     *
+     * Stop animation
      */
     stopAnimation() {
       pose.setTime(0);
@@ -91,7 +82,7 @@
     },
 
     /**
-     *
+     * Set loop
      * @param value {Boolean}
      */
     setLoop(value) {
@@ -113,13 +104,11 @@
      * @public
      */
     setEntity(entity) {
-
       this._entity = entity;
 
       if (this._ready) {
         pose.setEntity(entity);
       }
-
     },
 
     /**
@@ -128,13 +117,11 @@
      * @public
      */
     setAnim(animation) {
-
       this._animation = animation;
 
       if (this._ready) {
         pose.setAnim(animation);
       }
-
     },
 
     /**
@@ -144,10 +131,9 @@
      * @private
      */
     _preload(callback) {
-
       if (this._ready) {
         return callback({
-          error: 'is ready'
+          error: 'Resource already done'
         });
       }
 
@@ -157,12 +143,10 @@
         }
 
         let loaderIndex = 0;
-
         // create and load Spriter data from SCON file
         const data = new spriter.Data().load(scon);
         // create Spriter pose and attach data
         pose = new spriter.Pose(data);
-
         // Getting file count
         scon.folder.forEach(folder => folder.file.forEach(() => ++loaderIndex));
 
@@ -193,12 +177,8 @@
 
                 break;
               }
-
               default: {
-                // TODO: Add
-                // pose.bone_array
-                // pose.event_array
-                // pose.tag_array
+                // TODO: Add pose.bone_array, pose.event_array, pose.tag_array
                 cc.warn('not load', file.type, file.name);
                 break;
               }
@@ -206,7 +186,6 @@
           });
         });
       });
-
     },
 
     /**
@@ -225,9 +204,7 @@
      * @private
      */
     _getObjectArraySprites() {
-
       return pose.object_array.map(object => {
-
         if (object.type === 'sprite') {
           const folder = pose.data.folder_array[object.folder_index];
           const file = folder.file_array[object.file_index];
@@ -242,9 +219,7 @@
             spriteFrame
           };
         }
-
       });
-
     },
 
     /**
@@ -252,7 +227,6 @@
      * @private
      */
     _initSpriteFrames() {
-
       this._getObjectArraySprites()
         .forEach((e, i) => {
           e.myIndex = i;
@@ -263,7 +237,6 @@
           this.sprites.push(sprite);
           this.addChild(sprite);
         });
-
     },
 
     /**
@@ -274,7 +247,6 @@
      * @private
      */
     _updateSprite(sprite, worldSpace, e) {
-
       sprite.setName(e.imageKey);
       sprite.opacity = e.object.alpha * 255;
       sprite.x = worldSpace.position.x;
@@ -282,11 +254,9 @@
       sprite.scaleX = worldSpace.scale.x;
       sprite.scaleY = worldSpace.scale.y;
       sprite.rotation = -worldSpace.rotation.deg;
-
       sprite.myFile = e.file;
       sprite.myFolder = e.folder;
       sprite.myIndex = e.myIndex;
-
     },
 
     /**
@@ -296,11 +266,8 @@
      * @private
      */
     _findSpriteByObject(e) {
-
-      let sprite;
-
       for (let i = 0, len = this.sprites.length; i < len; i++) {
-        sprite = this.sprites[i];
+        const sprite = this.sprites[i];
 
         if (Object.is(e.file, sprite.myFile) &&
           Object.is(e.folder, sprite.myFolder) &&
@@ -308,7 +275,6 @@
           return sprite;
         }
       }
-
     },
 
     /**
@@ -316,11 +282,9 @@
      * @private
      */
     _hideAllSprites() {
-
       for (let i = 0, len = this.sprites.length; i < len; i++) {
         this.sprites[i].opacity = 0;
       }
-
     },
 
     /**
@@ -329,7 +293,6 @@
      * @private
      */
     _updateSpriteFrames(objectArraySprites) {
-
       let e;
       let worldSpace;
       let sprite;
@@ -339,7 +302,6 @@
         e.myIndex = index;
         worldSpace = e.object.world_space;
         sprite = this._findSpriteByObject(e);
-
         // If sprite not found - creating a new sprite
         if (!sprite) {
           sprite = new cc.Sprite(e.spriteFrame);
@@ -350,7 +312,6 @@
         this._updateSprite(sprite, worldSpace, e);
         sprite.zIndex = index;
       }
-
     }
 
   });

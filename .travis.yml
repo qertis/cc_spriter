@@ -1,15 +1,14 @@
 language: node_js
 
 node_js:
-  - 5.5
+  - 6.0
   
 before_script:
-  - npm install
-  - npm install -g bower
-  - npm install -g webpack
-  - bower install
+  - npm install -g bower webpack
+  - bower i
  
-script: ./node_modules/webpack/bin/webpack.js -p
+script:
+  - npm run webpack
 
 # TODO: Use Closure compile (with upload needed jar)
 #script: ./bin/compile.sh
