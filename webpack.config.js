@@ -5,8 +5,8 @@ module.exports = {
     './cc_spriter.js'
   ],
   output: {
-    path: path.join(__dirname, 'bower_components/temp/'),
-    filename: 'cc_spriter_component.js'
+    path: path.join(__dirname, './temp'),
+    filename: 'cc_spriter_dist.js'
   },
   externals: {},
   resolve: {},

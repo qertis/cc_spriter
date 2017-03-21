@@ -1,22 +1,22 @@
 # Spriter Cocos2d 3.x 
-> Based on [spriter.js](https://github.com/flyover/spriter.js) SCON Implementation 
+> Based on [spriter.js](https://github.com/flyover/spriter.js) SCON Implementation. [Discuss forum](https://brashmonkey.com/forum/index.php?/topic/4474-using-spriter-animations-in-cocos2d-js/)
 
+[![Build Status](https://travis-ci.org/gotois/cc_spriter.svg?branch=master)](https://travis-ci.org/gotois/cc_spriter)
+[![Dependency Status](https://david-dm.org/gotois/cc_spriter.svg)](https://david-dm.org/gotois/cc_spriter)
+[![devDependencies Status](https://david-dm.org/gotois/cc_spriter/dev-status.svg)](https://david-dm.org/gotois/cc_spriter?type=dev)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4023ff166364425d805232ac1518e4d9)](https://www.codacy.com/app/qertis/cc_spriter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=qertis/cc_spriter&amp;utm_campaign=Badge_Grade)
-[![Dependency Status](https://david-dm.org/tewst/cc_spriter.svg)](https://david-dm.org/tewst/cc_spriter)
-[![Build Status](https://travis-ci.org/tewst/cc_spriter.svg?branch=master)](https://travis-ci.org/tewst/cc_spriter)
-[Discuss](https://brashmonkey.com/forum/index.php?/topic/4474-using-spriter-animations-in-cocos2d-js/)
 
 <a href="http://www.brashmonkey.com/">
   <img title="spriter logo" src="https://pbs.twimg.com/profile_images/2556942741/yxn4f63yjqc74hyf2ylb.png" width="192">
 </a>
 
-Install from Bower:
+Install from Bower
 ---
 ```sh
 bower install cc_spriter
 ```
 
-Usage:
+Usage
 ---
 Include cc_spriter_min.js in project.json
 ```json
@@ -25,15 +25,15 @@ Include cc_spriter_min.js in project.json
 ]
 ```  
 
-Example:
+Example
 ---
 ```js
-var spriter = new cc.Spriter(pathToScon);
+const spriter = new cc.Spriter(pathToScon);
 spriter.setEntity(entityName);
 spriter.setAnim(animationName);
 ```
 
-API:
+API
 ---
 ```js
 spriter.setLoop(Boolean);
@@ -41,13 +41,14 @@ spriter.pause();
 spriter.resume();
 ```
 
-Development:
+Development
 ===
 
 Need dependencies:
 ---
 * node >= 6.0
 * Bash Shell
+* JAVA
 * [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 * [compiler.jar](http://dl.google.com/closure-compiler/compiler-latest.zip) 
 * * send compiler.jar to directory ```bower_components/google-closure-library/```
@@ -57,13 +58,12 @@ Setup:
 ---
 ```sh
 npm i
-bower i
 ```
 
-Compile source code with Google Closure:
+Compile source code with Google Closure
 ---
 ```sh
-npm run start
+npm run compile
 ```
 
 Project structure:
@@ -84,7 +84,7 @@ Project structure:
 └─ cc_spriter.js
 ```
 
-Features:
+Features
 ---
 * Canvas 2D and WebGL supports
 * No global dependencies

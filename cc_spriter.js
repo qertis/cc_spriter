@@ -1,6 +1,6 @@
 /**
  * @name Cocos2d Spriter
- * @version 1.1.5
+ * @version 1.1.6
  * @author goto Interactive Software
  *
  * Based on Spriter.js by Isaac Burns <isaacburns@gmail.com>

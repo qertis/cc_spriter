@@ -1,48 +1,32 @@
 #!/usr/bin/env bash
 # Compile source codes to minified dist/cc_spriter_min.js file
+################################################################
+echo "Compile started"
 
-rm -rf bower_components/temp
-
-# Create dist and temp directories
-mkdir -p dist
+# Clear old directories
+rm -rf bower_components/spriterjs/demo/
+rm -rf temp/
+rm -rf dist/
 
 # Build minification
-webpack -p
+npm run webpack
 
-cd bower_components/
+# Compile spriter
+cd node_modules/
+google-closure-library/closure/bin/build/closurebuilder.py --root=google-closure-library/ --root=../bower_components/spriterjs/ --namespace="spriter" --output_mode=compiled --compiler_jar=google-closure-library/compiler.jar --output_file=../temp/closure_compiled.js
+cd ../
 
-mkdir -p temp
-
-# Copy spriter.js file to temp directory
-cp spriterjs/spriter.js temp/spriter.js
-
-# Build compiled file (spriter and goog)
-google-closure-library/closure/bin/build/closurebuilder.py \
-  --root=google-closure-library/ \
-  --root=temp/ \
-  --namespace="spriter" \
-  --output_mode=compiled \
-  --compiler_jar=google-closure-library/compiler.jar > temp/closure_compiled.js
-
+# Union spriter.js and cc.spriter to temp_cc_spriter_min.js
 cd temp/
-
-# Concat files
-cat closure_compiled.js \
-    cc_spriter_component.js \
-    > ../temp/temp_cc_spriter_min.js
+cat closure_compiled.js cc_spriter_dist.js > temp_cc_spriter_min.js
+rm closure_compiled.js
+rm cc_spriter_dist.js
 
 # Closure wrap
 sed -i "1i!function(){" temp_cc_spriter_min.js;
 echo "}();" >> temp_cc_spriter_min.js;
-
 # Move minified file
-mv temp_cc_spriter_min.js ../../dist/cc_spriter_min.js;
-
-# Remove old files
-sleep 1
-cd ../../
-rm -rf bower_components/temp
-
-echo 'end'
-
-exit;
+cd ../
+mkdir -p dist/
+mv temp/temp_cc_spriter_min.js dist/cc_spriter_min.js
+rm -rf temp/
